@@ -226,6 +226,14 @@ pub fn game_installed(game: Game) -> bool {
         .exists()
 }
 
+/// Riot's per-product locale resource for the live patchline.
+fn product_locale_path(game: Game) -> String {
+    format!(
+        "/riotclient/product-locales/products/{}/patchlines/live",
+        game.product()
+    )
+}
+
 /// Start `game` for the signed-in account and wait until its client process
 /// confirms the same account. Requests go through the local API, after
 /// rechecking the Riot session immediately before each launch request.
@@ -322,13 +330,53 @@ fn launch_confirmed(current: &GameStatus, account_id: &str) -> Result<bool, Logi
 
 /// Launch the requested game; TFT falls back to the League client, which
 /// also hosts TFT, when the standalone TFT client cannot start.
-fn start_game(game: Game, account_id: &str, cancel: &AtomicBool) -> Result<(), LoginError> {
+///
+/// `locale` is applied to the product before the launch request. A locale the
+/// client refuses is not fatal: the game still starts in whatever language the
+/// client already had.
+fn start_game(
+    game: Game,
+    account_id: &str,
+    locale: Option<&str>,
+    cancel: &AtomicBool,
+) -> Result<(), LoginError> {
+    if let Some(locale) = locale {
+        apply_locale(game, locale);
+    }
     match launch_game(game, account_id, cancel) {
         Err(LoginError::GameLaunchFailed) if game == Game::Tft => {
+            if let Some(locale) = locale {
+                apply_locale(Game::League, locale);
+            }
             launch_game(Game::League, account_id, cancel)
         }
         result => result,
     }
+}
+
+/// Set the product locale on the signed-in client and record the outcome.
+/// Failures stay non-fatal; the user still gets the game, just not the
+/// requested language.
+fn apply_locale(game: Game, locale: &str) {
+    let Some(api) = LocalApi::read() else {
+        logging::record(Event::LoginProgress, Reason::LocaleUnavailable);
+        return;
+    };
+    if !api.set_product_locale(game, locale) {
+        logging::record(Event::LoginProgress, Reason::LocaleRejected);
+        return;
+    }
+    // The client answers success for locales it then silently keeps, so read
+    // the value back instead of trusting the status code.
+    let applied = api.product_locale(game).as_deref() == Some(locale);
+    logging::record(
+        Event::LoginProgress,
+        if applied {
+            Reason::LocaleApplied
+        } else {
+            Reason::LocaleRejected
+        },
+    );
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -537,6 +585,25 @@ impl LocalApi {
             Err(error) if error.is_timeout() => Launch::Pending,
             _ => Launch::Rejected,
         }
+    }
+
+    /// Read the product locale the client will launch `game` with.
+    fn product_locale(&self, game: Game) -> Option<String> {
+        let (status, body) = self.get(&product_locale_path(game))?;
+        (status == 200).then(|| body.as_str().map(str::to_owned)).flatten()
+    }
+
+    /// Set the product locale before launching. Riot answers 201 on success and
+    /// keeps the previous value when the locale is not installable, so callers
+    /// verify with [`LocalApi::product_locale`] instead of trusting the status.
+    fn set_product_locale(&self, game: Game, locale: &str) -> bool {
+        self.client
+            .put(format!("{}{}", self.base, product_locale_path(game)))
+            .basic_auth("riot", Some(&self.password))
+            .header(reqwest::header::CONTENT_TYPE, "application/json")
+            .body(serde_json::json!(locale).to_string())
+            .send()
+            .is_ok_and(|response| response.status().is_success())
     }
 
     /// Riot account information of the signed-in account.
@@ -767,7 +834,7 @@ fn close_league(cancel: &AtomicBool) -> Result<(), LoginError> {
         if force {
             command.arg("/F");
         }
-        // `/T` also ends the crash handler and renderer children, which are not
+        // `/T` also ends the crash-handler and crashpad children, which are not
         // in `names` and would otherwise keep the tree alive.
         command.arg("/T");
         for name in &names {
@@ -826,18 +893,33 @@ fn close_league_with(
     }
 }
 
+/// What to do once the account is signed in.
+#[derive(Clone, Copy, Debug, Default)]
+pub struct LaunchOptions<'a> {
+    /// Product to start after signing in; `None` leaves the client open.
+    pub game: Option<Game>,
+    /// Product locale to apply before the launch request.
+    pub locale: Option<&'a str>,
+    /// Close a League client that belongs to another account.
+    pub close_running: bool,
+}
+
 /// Sign in through Riot's native form, then launch the requested game.
 /// `on_ban` receives the League suspension Riot reports once signed in and
 /// returns whether a suspended account may still launch the game.
 pub fn login(
     account_id: &str,
     password: &str,
-    game: Option<Game>,
-    close_running: bool,
+    options: LaunchOptions<'_>,
     progress: &mut dyn FnMut(LoginStep),
     on_ban: &mut dyn FnMut(Option<Ban>) -> bool,
     cancel: &AtomicBool,
 ) -> Result<LoginOutcome, LoginError> {
+    let LaunchOptions {
+        game,
+        locale,
+        close_running,
+    } = options;
     check_cancelled(cancel)?;
     let path = client_path().ok_or(LoginError::ClientMissing)?;
     let current = status();
@@ -878,7 +960,7 @@ pub fn login(
                                 await_product_context(&mut client, progress, cancel)?;
                             }
                             progress(LoginStep::LaunchGame);
-                            start_game(game, account_id, cancel)?;
+                            start_game(game, account_id, locale, cancel)?;
                         }
                         progress(LoginStep::Done);
                         return Ok(LoginOutcome::AlreadySignedIn);
@@ -923,9 +1005,14 @@ pub fn login(
         client.close_debugger()?;
         check_cancelled(cancel)?;
         progress(LoginStep::LaunchGame);
-        start_game(game, account_id, cancel)?;
+        start_game(game, account_id, locale, cancel)?;
         client.replaced_by_game();
     } else {
+        // No launch now, but the next manual start should already be in the
+        // account's language, so apply it to the product the user plays.
+        if let Some(locale) = locale {
+            apply_locale(game.unwrap_or(Game::League), locale);
+        }
         client.restore()?;
         check_cancelled(cancel)?;
     }

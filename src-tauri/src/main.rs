@@ -16,6 +16,7 @@ use leagueaccounts::credentials;
 use leagueaccounts::logging::{self, Event, Reason};
 use leagueaccounts::models::{Account, AccountKey, Ban, RankInfo};
 use leagueaccounts::rank_fetcher::{RankFetcher, RankProvider};
+use leagueaccounts::locales;
 use leagueaccounts::riot_client::{self, Game, LoginError, LoginOutcome, LoginStep};
 use leagueaccounts::utils::{app_data_dir, parse_account_line, region_from_display, settings_file, REGION_MAP};
 use leagueaccounts::AccountManager;
@@ -70,9 +71,18 @@ struct SettingsInput {
 
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
+struct LocaleOption {
+    code: &'static str,
+    name: &'static str,
+}
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
 struct Bootstrap {
     accounts: Vec<AccountView>,
     regions: Vec<String>,
+    /// Every game locale the client can install, with display names.
+    locales: Vec<LocaleOption>,
     version: &'static str,
     logging_available: bool,
     load_error: Option<AppError>,
@@ -89,6 +99,9 @@ struct NewAccount {
     region: String,
     password: String,
     description: String,
+    /// Product locale the game should start in; omitted means Riot's choice.
+    #[serde(default)]
+    locale: Option<String>,
 }
 
 #[derive(Serialize)]
@@ -103,6 +116,17 @@ struct BatchResult {
 struct BulkAddResult {
     added: usize,
     skipped_lines: Vec<usize>,
+}
+
+/// Validate a locale coming from the web view. An empty value clears the
+/// override; an unknown one is rejected instead of silently becoming `en_US`.
+fn normalize_locale(value: Option<&str>) -> CommandResult<Option<String>> {
+    match value.map(str::trim).filter(|value| !value.is_empty()) {
+        None => Ok(None),
+        Some(value) => locales::normalize(value)
+            .map(|locale| Some(locale.to_owned()))
+            .ok_or_else(|| fail("invalid_locale")),
+    }
 }
 
 fn manager(state: &Shared) -> CommandResult<MutexGuard<'_, AccountManager>> {
@@ -161,6 +185,13 @@ fn bootstrap(app: AppHandle, state: AppState<'_>) -> CommandResult<Bootstrap> {
             .iter()
             .map(|(label, _)| (*label).to_owned())
             .collect(),
+        locales: locales::GAME_LOCALES
+            .iter()
+            .map(|code| LocaleOption {
+                code,
+                name: locales::locale_name(code),
+            })
+            .collect(),
         version: env!("CARGO_PKG_VERSION"),
         logging_available: logging::is_available(),
         load_error: state.load_error.clone(),
@@ -184,6 +215,7 @@ fn add_account(app: AppHandle, state: AppState<'_>, input: NewAccount) -> Comman
     }
     let region_label = input.region.trim().to_owned();
     let region = region_from_display(&region_label).ok_or_else(|| fail("invalid_region"))?;
+    let locale = normalize_locale(input.locale.as_deref())?;
     let account = {
         let mut manager = manager(&state)?;
         if manager.accounts.iter().any(|account| {
@@ -198,6 +230,7 @@ fn add_account(app: AppHandle, state: AppState<'_>, input: NewAccount) -> Comman
             region_display: region_label,
             password,
             description: input.description.trim().to_owned(),
+            locale,
             tier: "Unranked".to_owned(),
             reached_last_season: "N/A".to_owned(),
             finished_last_season: "N/A".to_owned(),
@@ -214,9 +247,16 @@ fn add_account(app: AppHandle, state: AppState<'_>, input: NewAccount) -> Comman
 }
 
 #[tauri::command]
-fn multi_add(app: AppHandle, state: AppState<'_>, text: String, region: String) -> CommandResult<BulkAddResult> {
+fn multi_add(
+    app: AppHandle,
+    state: AppState<'_>,
+    text: String,
+    region: String,
+    locale: Option<String>,
+) -> CommandResult<BulkAddResult> {
     let region_label = region.trim().to_owned();
     let region = region_from_display(&region_label).ok_or_else(|| fail("invalid_region"))?;
+    let locale = normalize_locale(locale.as_deref())?;
     let mut candidates = Vec::new();
     let mut source_lines = Vec::new();
     let mut skipped_lines = Vec::new();
@@ -236,6 +276,7 @@ fn multi_add(app: AppHandle, state: AppState<'_>, text: String, region: String) 
             region_display: region_label.clone(),
             password: password.to_owned(),
             description: String::new(),
+            locale: locale.clone(),
             tier: "Unranked".to_owned(),
             reached_last_season: "N/A".to_owned(),
             finished_last_season: "N/A".to_owned(),
@@ -259,9 +300,19 @@ fn update_account(
     key: Key,
     name: String,
     description: String,
+    locale: Option<String>,
+    password: Option<String>,
 ) -> CommandResult<AccountView> {
     let key = AccountKey::from(key);
     let name = name.trim().to_owned();
+    let locale = normalize_locale(locale.as_deref())?;
+    // `None` leaves the stored password alone; an empty value is a no-op too,
+    // so an untouched password field cannot wipe the credential.
+    let new_password = password
+        .as_deref()
+        .map(str::trim)
+        .filter(|value| !value.is_empty())
+        .map(str::to_owned);
     let (updated, renamed) = {
         let mut manager = manager(&state)?;
         let account = manager.account_mut(&key).ok_or_else(|| fail("not_found"))?;
@@ -272,12 +323,18 @@ fn update_account(
             RankInfo::unranked().apply_to(account);
         }
         account.description = description.trim().to_owned();
+        account.locale = locale;
         let updated = account.clone();
         manager
             .save_accounts()
             .map_err(|error| fail_with("save_failed", error))?;
         (updated, renamed)
     };
+    if let Some(password) = new_password {
+        let credential_key = format!("{}:{}", key.region, key.account_id);
+        credentials::set_password(KEYRING_SERVICE, &credential_key, &password)
+            .map_err(|error| fail_with("password_save", error))?;
+    }
     let view = account_view(&updated);
     if renamed {
         start_refresh(app, Arc::clone(&state), vec![updated], RefreshKind::Partial);
@@ -452,8 +509,11 @@ async fn login(
         riot_client::login(
             &account.account_id,
             &password,
-            game,
-            close_running,
+            riot_client::LaunchOptions {
+                game,
+                locale: account.locale.as_deref(),
+                close_running,
+            },
             &mut progress,
             &mut on_ban,
             &shared.login.cancel,

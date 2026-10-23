@@ -182,6 +182,9 @@ pub enum Reason {
     ProfileMissing,
     Checksum,
     VersionMismatch,
+    LocaleApplied,
+    LocaleRejected,
+    LocaleUnavailable,
     Other,
 }
 
@@ -250,6 +253,9 @@ impl Reason {
             Self::ProfileMissing => "profile_missing",
             Self::Checksum => "checksum",
             Self::VersionMismatch => "version_mismatch",
+            Self::LocaleApplied => "locale_applied",
+            Self::LocaleRejected => "locale_rejected",
+            Self::LocaleUnavailable => "locale_unavailable",
             Self::Other => "other",
         }
     }

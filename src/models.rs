@@ -36,6 +36,10 @@ pub struct Account {
     pub rank_provenance: Option<RankProvenance>,
     #[serde(default)]
     pub tft_provenance: Option<RankProvenance>,
+    /// Product locale the game should start in, independent of `region`.
+    /// `None` leaves Riot's own choice untouched.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub locale: Option<String>,
     /// League suspension Riot reported at the last sign-in through the app.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ban: Option<Ban>,

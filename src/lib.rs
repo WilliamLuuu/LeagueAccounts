@@ -9,6 +9,7 @@ pub mod account_manager;
 pub mod autotype;
 pub mod clipboard;
 pub mod credentials;
+pub mod locales;
 pub mod logging;
 pub mod models;
 pub mod rank_fetcher;
