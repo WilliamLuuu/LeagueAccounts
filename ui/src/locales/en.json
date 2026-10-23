@@ -285,5 +285,7 @@
   "vn.skip": "Skip profile update",
   "vn.skipHint": "For Vietnamese accounts: blocks the region's identity provider so the login skips Riot's profile-update flow.",
   "welcome.title": "Welcome",
-  "welcome.text": "Choose the interface language. You can change it later in Settings."
+  "welcome.text": "Choose the interface language. You can change it later in Settings.",
+  "vn.homepageWarning": "When the game language is Simplified Chinese (zh_CN), the client home page may render blank or with missing tiles. This is a Riot limitation for zh_CN assets. ABC patches around it; this tool does not. If the home page looks broken, switch the game language to zh_MY or zh_TW in Settings.",
+  "vn.homepageNote": "The client home page may render with missing tiles. ABC patches around it; this tool does not."
 }

@@ -282,8 +282,10 @@
   "err.logs_folder": "无法打开日志目录。",
   "err.load_failed": "加载账号失败。",
   "err.unknown": "出错了。",
-  "vn.skip": "跳过更新资料",
+  "vn.skip": "跳过更新资料（越南服）",
   "vn.skipHint": "越南服专用：屏蔽区服身份验证域名，使登录跳过 Riot 的更新资料流程。",
   "welcome.title": "欢迎",
-  "welcome.text": "选择界面语言，之后可以在设置中更改。"
+  "welcome.text": "选择界面语言，之后可以在设置中更改。",
+  "vn.homepageWarning": "游戏语言为简体中文（zh_CN）时，客户端首页可能出现空白或显示异常（缺少瓦片）。这是 Riot 对 zh_CN 资源的限制，ABC 通过“主页兼容”补丁处理，本工具暂未实现该补丁。如遇首页异常，可在设置中把游戏语言改为 zh_MY 或 zh_TW。",
+  "vn.homepageNote": "客户端首页可能出现异常（缺瓦片）。ABC 用“主页兼容”补丁处理，本工具未实现。"
 }

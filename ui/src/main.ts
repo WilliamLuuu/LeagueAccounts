@@ -517,7 +517,8 @@ async function editAccount(account: AccountView): Promise<void> {
         <span class="switch"></span>
       </label>
       <p class="hint">${t("edit.hint")}</p>
-      <p class="hint">${t("edit.localeHint")}</p>`,
+      <p class="hint">${t("edit.localeHint")}</p>
+      <p class="hint warn">${esc(t("vn.homepageNote"))}</p>`,
     actions: [
       { label: t("common.cancel"), value: "cancel" },
       { label: t("common.save"), value: "save", kind: "primary" },
@@ -790,6 +791,7 @@ function openAddDrawer(tab: "single" | "multi" = "single"): void {
               <input name="description" autocomplete="off" placeholder="${esc(t("edit.descriptionPh"))}" /></label>
             <label class="field"><span>${t("edit.locale")}</span>
               <div class="select-wrap full"><select name="locale">${localeOptionsHtml(lastLocale())}</select></div></label>
+            <p class="hint warn">${esc(t("vn.homepageNote"))}</p>
             <label class="toggle-row">
               <span class="toggle-text"><strong>${esc(t("vn.skip"))}</strong><span>${esc(t("vn.skipHint"))}</span></span>
               <input type="checkbox" name="skipProfileUpdate"/>

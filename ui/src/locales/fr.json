@@ -285,5 +285,7 @@
   "vn.skip": "Ignorer la mise à jour du profil",
   "vn.skipHint": "Pour les comptes vietnamiens : bloque le fournisseur d'identité de la région pour que la connexion ignore la mise à jour du profil.",
   "welcome.title": "Bienvenue",
-  "welcome.text": "Choisissez la langue de l'interface. Vous pourrez la modifier plus tard dans les paramètres."
+  "welcome.text": "Choisissez la langue de l'interface. Vous pourrez la modifier plus tard dans les paramètres.",
+  "vn.homepageNote": "La page d'accueil du client peut afficher des tuiles manquantes. ABC applique un correctif ; cet outil ne le fait pas.",
+  "vn.homepageWarning": "Lorsque la langue du jeu est le chinois simplifie (zh_CN), la page d'accueil du client peut apparaitre vide ou avec des tuiles manquantes. C'est une limite de Riot pour les ressources zh_CN ; ABC applique un correctif, cet outil ne l'implemente pas. Si la page d'accueil est cassee, passez la langue du jeu en zh_MY ou zh_TW dans les parametres."
 }

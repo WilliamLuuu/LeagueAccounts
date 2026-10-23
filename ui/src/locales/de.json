@@ -285,5 +285,7 @@
   "vn.skip": "Profilaktualisierung überspringen",
   "vn.skipHint": "Für vietnamesische Konten: blockiert den Identitätsanbieter der Region, damit die Anmeldung die Profilaktualisierung überspringt.",
   "welcome.title": "Willkommen",
-  "welcome.text": "Wählen Sie die Sprache der Oberfläche. Sie lässt sich später in den Einstellungen ändern."
+  "welcome.text": "Wählen Sie die Sprache der Oberfläche. Sie lässt sich später in den Einstellungen ändern.",
+  "vn.homepageNote": "Die Startseite des Clients kann fehlende Kacheln zeigen. ABC patcht das; dieses Tool nicht.",
+  "vn.homepageWarning": "Wenn die Spielsprache Vereinfachtes Chinesisch (zh_CN) ist, kann die Startseite des Clients leer sein oder fehlende Kacheln zeigen. Das ist eine Riot-Einschraenkung fuer zh_CN-Ressourcen; ABC patcht das, dieses Tool nicht. Falls die Startseite defekt ist, stellen Sie die Spielsprache in den Einstellungen auf zh_MY oder zh_TW um."
 }

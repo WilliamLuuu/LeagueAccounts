@@ -285,5 +285,7 @@
   "vn.skip": "Profil güncellemeyi atla",
   "vn.skipHint": "Vietnam hesapları için: bölgenin kimlik sağlayıcısını engelleyerek girişin profil güncellemeyi atlamasını sağlar.",
   "welcome.title": "Hoş geldiniz",
-  "welcome.text": "Arayüz dilini seçin. Ayarlar'dan daha sonra değiştirebilirsiniz."
+  "welcome.text": "Arayüz dilini seçin. Ayarlar'dan daha sonra değiştirebilirsiniz.",
+  "vn.homepageNote": "İstemci ana sayfasında eksik kutucuklar görünebilir. ABC bir yama uygular; bu araç uygulamaz.",
+  "vn.homepageWarning": "Oyun dili Basit Cince (zh_CN) oldugunda, istemci ana sayfasi bos veya eksik kutucuklarla gorunebilir. Bu, Riot'un zh_CN kaynaklari icin bir sinirlamasidir; ABC bir yama uygular, bu arac uygulamaz. Ana sayfa bozuksa Ayarlar'dan oyun dilini zh_MY veya zh_TW yapin."
 }

@@ -285,5 +285,7 @@
   "vn.skip": "Omitir la actualización del perfil",
   "vn.skipHint": "Para cuentas vietnamitas: bloquea el proveedor de identidad de la región para que el inicio de sesión omita la actualización del perfil.",
   "welcome.title": "Bienvenido",
-  "welcome.text": "Elige el idioma de la interfaz. Podrás cambiarlo después en Ajustes."
+  "welcome.text": "Elige el idioma de la interfaz. Podrás cambiarlo después en Ajustes.",
+  "vn.homepageNote": "La página de inicio del cliente puede mostrar mosaicos faltantes. ABC aplica un parche; esta herramienta no lo hace.",
+  "vn.homepageWarning": "Cuando el idioma del juego es chino simplificado (zh_CN), la pagina de inicio del cliente puede aparecer en blanco o con mosaicos faltantes. Es una limitacion de Riot para los recursos zh_CN; ABC aplica un parche, esta herramienta no lo implementa. Si la pagina de inicio se ve rota, cambia el idioma del juego a zh_MY o zh_TW en Ajustes."
 }

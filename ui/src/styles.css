@@ -916,6 +916,10 @@ code {
   }
 }
 
+.hint.warn {
+  color: #e8bb6a;
+}
+
 .desc {
   margin: -4px 2px 0;
   font-size: 12.5px;
