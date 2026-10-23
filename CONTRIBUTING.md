@@ -14,13 +14,60 @@ npx tauri build --no-bundle  # build target/release/LeagueAccounts.exe
 |---|---|
 | `src/` | Rust core: storage, Credential Manager, OP.GG parsing, Riot Client integration, auto-type |
 | `src-tauri/` | Tauri shell: commands, auto refresh scheduler, settings, automatic updates |
-| `ui/` | Web interface (TypeScript + CSS); translations live in `ui/src/i18n.ts` |
+| `ui/` | Web interface (TypeScript + CSS); translations live in `ui/src/locales/*.json` |
 
 ## Browser preview
 
 `npm run dev` serves the interface at **http://localhost:1420** with 11 synthetic accounts (one per rank from Iron to Challenger, plus Unranked, in LoL and TFT). A **DEV DATA** badge marks the preview. Login, refresh, edits and settings are simulated in memory: no real accounts, credentials, files or Riot Client connections are used. **Reset demo** restores the sample data.
 
 `?scene=` opens a specific screen: `tft`, `list`, `settings`, `add`, `menu`, `login`, `update`, `updating` (update found at launch), `restart` (update installed in the background) and `loading` (holds the startup screen).
+
+## Translations
+
+One JSON file per language under `ui/src/locales/`. English (`en.json`) is the
+reference: `ui/src/i18n.ts` derives `MessageKey` from it and requires every
+other file to match with `satisfies Record<string, Dict>`, so a missing,
+misspelled or extra key fails `tsc` instead of showing a raw key at runtime.
+
+To add a language:
+
+1. Copy `ui/src/locales/en.json` to `<lang>.json` and translate every value.
+   Keep the key order and the `{placeholders}` exactly as they are.
+2. Import it in `ui/src/i18n.ts`, add it to `dicts` and to `LANGUAGES`, and add
+   its `HTML_LANG` entry (a real BCP-47 tag — `zh-TW`, not `zhTw`).
+3. Run `npx tsc --noEmit`.
+
+Chinese needs two entries: `zh` (`zh-CN`) and `zhTw` (`zh-TW`). The browser
+language is matched in `fromBrowser`, where `zh-HK`/`zh-MO`/`zh-Hant` map to
+Traditional.
+
+### Terminology
+
+Agreed wording, so the same concept reads the same everywhere:
+
+| English | 简体中文 | 繁體中文 |
+|---|---|---|
+| account (credentials) | 账号 | 帳號 |
+| account ID | 账号 ID | 帳號 ID |
+| Riot ID | Riot ID | Riot ID |
+| Riot Client | Riot客户端 | Riot客戶端 |
+| region | 区服 | 伺服器 |
+| rank / tier | 段位 | 階級 |
+| Iron … Challenger | 黑铁 … 王者 | 鐵牌 … 菁英 |
+| TFT | 云顶之弈 | 聯盟戰棋 |
+| ARAM | 大乱斗 | 隨機單中 |
+| Windows Credential Manager | Windows 凭据管理器 | Windows 認證管理員 |
+
+### Localization platform
+
+Not integrated, deliberately: no Crowdin, Weblate or Transifex configuration
+exists. The JSON-per-language layout is what those platforms sync against, so
+adding one later means writing the tool's config and a CI step — the
+translation files do not move again.
+
+Weblate is the first choice when that happens: open-source projects can be
+hosted free on `libre.weblate.org`, and its translations land as ordinary Git
+commits, which matches how this repository already works.
 
 ## Tests
 
