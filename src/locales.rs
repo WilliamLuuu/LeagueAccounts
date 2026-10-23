@@ -14,8 +14,8 @@
 /// `live` patchline, in the order the registry returns them.
 pub const GAME_LOCALES: &[&str] = &[
     "ar_AE", "cs_CZ", "de_DE", "el_GR", "en_AU", "en_GB", "en_PH", "en_SG", "en_US", "es_AR",
-    "es_ES", "es_MX", "fr_FR", "hu_HU", "id_ID", "it_IT", "ja_JP", "ko_KR", "pl_PL", "pt_BR",
-    "ro_RO", "ru_RU", "th_TH", "tr_TR", "vi_VN", "zh_MY", "zh_TW",
+    "es_ES", "es_MX", "fr_FR", "hu_HU", "it_IT", "ja_JP", "ko_KR", "pl_PL", "pt_BR", "ro_RO",
+    "ru_RU", "th_TH", "tr_TR", "vi_VN", "zh_CN", "zh_MY", "zh_TW",
 ];
 
 /// Display names, so the UI does not have to ship its own table.
@@ -35,7 +35,6 @@ pub fn locale_name(locale: &str) -> &'static str {
         "es_MX" => "Español (Latinoamérica)",
         "fr_FR" => "Français",
         "hu_HU" => "Magyar",
-        "id_ID" => "Bahasa Indonesia",
         "it_IT" => "Italiano",
         "ja_JP" => "日本語",
         "ko_KR" => "한국어",
@@ -46,6 +45,7 @@ pub fn locale_name(locale: &str) -> &'static str {
         "th_TH" => "ไทย",
         "tr_TR" => "Türkçe",
         "vi_VN" => "Tiếng Việt",
+        "zh_CN" => "中文（中国）",
         "zh_MY" => "中文（马来西亚）",
         "zh_TW" => "中文（台灣）",
         _ => "English (United States)",

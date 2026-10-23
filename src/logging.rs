@@ -54,6 +54,8 @@ pub enum Event {
     UpdateFailed,
     UpdateRestarted,
     Panic,
+    HostsPatched,
+    HostsRestored,
 }
 
 impl Event {
@@ -94,6 +96,8 @@ impl Event {
             Self::UpdateFailed => "update_failed",
             Self::UpdateRestarted => "update_restarted",
             Self::Panic => "panic",
+            Self::HostsPatched => "hosts_patched",
+            Self::HostsRestored => "hosts_restored",
         }
     }
 
@@ -135,6 +139,7 @@ pub enum Reason {
     AuthIdentityPending,
     SessionPending,
     SessionActionRequired,
+    HostsPatchFailed,
     LoginFormReady,
     GameIdentityPending,
     GameProcessPending,
@@ -182,6 +187,8 @@ pub enum Reason {
     ProfileMissing,
     Checksum,
     VersionMismatch,
+    HostsPatched,
+    HostsRestored,
     LocaleApplied,
     LocaleRejected,
     LocaleUnavailable,
@@ -206,6 +213,7 @@ impl Reason {
             Self::AuthIdentityPending => "auth_identity_pending",
             Self::SessionPending => "session_pending",
             Self::SessionActionRequired => "session_action_required",
+            Self::HostsPatchFailed => "hosts_patch_failed",
             Self::LoginFormReady => "login_form_ready",
             Self::GameIdentityPending => "game_identity_pending",
             Self::GameProcessPending => "game_process_pending",
@@ -253,6 +261,8 @@ impl Reason {
             Self::ProfileMissing => "profile_missing",
             Self::Checksum => "checksum",
             Self::VersionMismatch => "version_mismatch",
+            Self::HostsPatched => "hosts_patched",
+            Self::HostsRestored => "hosts_restored",
             Self::LocaleApplied => "locale_applied",
             Self::LocaleRejected => "locale_rejected",
             Self::LocaleUnavailable => "locale_unavailable",

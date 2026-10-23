@@ -16,6 +16,7 @@ pub mod rank_fetcher;
 pub mod riot_client;
 pub mod self_update;
 pub mod updates;
+pub mod vn_hosts;
 pub mod utils;
 
 pub use account_manager::AccountManager;

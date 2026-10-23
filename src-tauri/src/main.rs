@@ -102,6 +102,9 @@ struct NewAccount {
     /// Product locale the game should start in; omitted means Riot's choice.
     #[serde(default)]
     locale: Option<String>,
+    /// Skip Riot's "update your profile" flow at sign-in (VN accounts).
+    #[serde(default)]
+    skip_profile_update: bool,
 }
 
 #[derive(Serialize)]
@@ -231,6 +234,7 @@ fn add_account(app: AppHandle, state: AppState<'_>, input: NewAccount) -> Comman
             password,
             description: input.description.trim().to_owned(),
             locale,
+            skip_profile_update: input.skip_profile_update,
             tier: "Unranked".to_owned(),
             reached_last_season: "N/A".to_owned(),
             finished_last_season: "N/A".to_owned(),
@@ -302,10 +306,12 @@ fn update_account(
     description: String,
     locale: Option<String>,
     password: Option<String>,
+    skip_profile_update: Option<bool>,
 ) -> CommandResult<AccountView> {
     let key = AccountKey::from(key);
     let name = name.trim().to_owned();
     let locale = normalize_locale(locale.as_deref())?;
+    let skip_profile_update = skip_profile_update.unwrap_or(false);
     // `None` leaves the stored password alone; an empty value is a no-op too,
     // so an untouched password field cannot wipe the credential.
     let new_password = password
@@ -324,6 +330,7 @@ fn update_account(
         }
         account.description = description.trim().to_owned();
         account.locale = locale;
+        account.skip_profile_update = skip_profile_update;
         let updated = account.clone();
         manager
             .save_accounts()
@@ -513,6 +520,7 @@ async fn login(
                 game,
                 locale: account.locale.as_deref(),
                 close_running,
+                skip_profile_update: account.skip_profile_update,
             },
             &mut progress,
             &mut on_ban,

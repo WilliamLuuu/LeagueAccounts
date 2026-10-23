@@ -902,6 +902,10 @@ pub struct LaunchOptions<'a> {
     pub locale: Option<&'a str>,
     /// Close a League client that belongs to another account.
     pub close_running: bool,
+    /// Block the VN identity-provider domains in `hosts` for this login and
+    /// restore them afterwards. Riot then skips its "update your profile"
+    /// flow, which otherwise hangs a VN account until its retry limit.
+    pub skip_profile_update: bool,
 }
 
 /// Sign in through Riot's native form, then launch the requested game.
@@ -919,8 +923,13 @@ pub fn login(
         game,
         locale,
         close_running,
+        skip_profile_update,
     } = options;
     check_cancelled(cancel)?;
+    // The patch must stay in place for the whole login: Riot's profile flow
+    // runs during it, not before. Restored in a scope guard so an error or
+    // cancellation cannot leave the machine patched.
+    let _vn_patch = crate::vn_hosts::Guard::new(skip_profile_update);
     let path = client_path().ok_or(LoginError::ClientMissing)?;
     let current = status();
     check_cancelled(cancel)?;
