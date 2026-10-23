@@ -1,0 +1,71 @@
+name: Build portable exe
+
+# Manual builds of the portable executable for testing a branch.
+#
+# `windows-latest` defaults to the MSVC toolchain, which links
+# WebView2LoaderStatic.lib and produces a single self-contained exe. A GNU
+# toolchain build links WebView2Loader.dll instead and needs that DLL next to
+# the exe, which is why local GNU builds cannot replace this.
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: Branch, tag or commit to build
+        required: true
+        default: main
+
+permissions:
+  contents: read
+
+concurrency:
+  group: portable-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ inputs.branch }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install stable Rust
+        # MSVC target is the point of this workflow; do not add the GNU one.
+        run: rustup toolchain install stable --profile minimal
+      - name: Install frontend dependencies
+        run: npm ci
+      - name: UI type-check and build
+        # The shell embeds ../dist at compile time.
+        run: npm run build
+      - name: Unit and regression tests
+        run: cargo +stable test --locked --workspace --all-targets
+      - name: Release build
+        run: npx tauri build --no-bundle
+      - name: Confirm the exe needs no sidecar DLL
+        shell: bash
+        run: |
+          exe=target/release/LeagueAccounts.exe
+          ls -l "$exe"
+          # The exe must not import WebView2Loader.dll: an MSVC build links the
+          # static loader, a GNU build does not and would need the DLL shipped.
+          if grep -qa "WebView2Loader.dll" "$exe"; then
+            echo "::error::$exe imports WebView2Loader.dll; a GNU toolchain was used"
+            exit 1
+          fi
+          echo "no WebView2Loader.dll import: self-contained"
+      - name: Name the artifact after the built revision
+        id: name
+        shell: bash
+        run: echo "value=LeagueAccounts-${BUILT//\//-}-${GITHUB_SHA:0:7}" >> "$GITHUB_OUTPUT"
+        env:
+          BUILT: ${{ inputs.branch }}
+      - name: Upload the portable exe
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.name.outputs.value }}
+          path: target/release/LeagueAccounts.exe
+          if-no-files-found: error
+          retention-days: 14
