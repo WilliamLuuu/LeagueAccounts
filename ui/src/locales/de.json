@@ -281,5 +281,9 @@
   "err.logs_unavailable": "Log-Ordner konnte nicht erstellt werden.",
   "err.logs_folder": "Log-Ordner konnte nicht geöffnet werden.",
   "err.load_failed": "Konten konnten nicht geladen werden.",
-  "err.unknown": "Etwas ist schiefgelaufen."
+  "err.unknown": "Etwas ist schiefgelaufen.",
+  "vn.skip": "Profilaktualisierung überspringen",
+  "vn.skipHint": "Für vietnamesische Konten: blockiert den Identitätsanbieter der Region, damit die Anmeldung die Profilaktualisierung überspringt.",
+  "welcome.title": "Willkommen",
+  "welcome.text": "Wählen Sie die Sprache der Oberfläche. Sie lässt sich später in den Einstellungen ändern."
 }

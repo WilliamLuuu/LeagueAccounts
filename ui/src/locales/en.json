@@ -281,5 +281,9 @@
   "err.logs_unavailable": "The log folder couldn't be created.",
   "err.logs_folder": "Couldn't open the log folder.",
   "err.load_failed": "Couldn't load accounts.",
-  "err.unknown": "Something went wrong."
+  "err.unknown": "Something went wrong.",
+  "vn.skip": "Skip profile update",
+  "vn.skipHint": "For Vietnamese accounts: blocks the region's identity provider so the login skips Riot's profile-update flow.",
+  "welcome.title": "Welcome",
+  "welcome.text": "Choose the interface language. You can change it later in Settings."
 }

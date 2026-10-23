@@ -80,23 +80,6 @@ pub fn restore() -> std::io::Result<()> {
     Ok(())
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn entries_cover_both_domains_with_the_marker() {
-        let entries = entries();
-        assert_eq!(entries.len(), VN_HOSTS.len());
-        for entry in &entries {
-            assert!(entry.starts_with("127.0.0.1 "), "{entry}");
-            assert!(entry.contains(MARKER), "{entry}");
-        }
-        assert!(entries.iter().any(|e| e.contains("login.pp.m.zing.vn")));
-        assert!(entries.iter().any(|e| e.contains("vn-api.vnggames.app")));
-    }
-}
-
 /// Patch on creation, restore on drop. `enabled == false` makes it a no-op, so
 /// the caller can pass the account flag directly.
 pub struct Guard {
@@ -128,3 +111,21 @@ impl Drop for Guard {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn entries_cover_both_domains_with_the_marker() {
+        let entries = entries();
+        assert_eq!(entries.len(), VN_HOSTS.len());
+        for entry in &entries {
+            assert!(entry.starts_with("127.0.0.1 "), "{entry}");
+            assert!(entry.contains(MARKER), "{entry}");
+        }
+        assert!(entries.iter().any(|e| e.contains("login.pp.m.zing.vn")));
+        assert!(entries.iter().any(|e| e.contains("vn-api.vnggames.app")));
+    }
+}
+

@@ -123,6 +123,8 @@ export interface AccountView {
   description: string;
   level: string;
   hasPassword: boolean;
+  /** Skip Riot's profile-update flow at sign-in (VN accounts). */
+  skipProfileUpdate: boolean;
   /** Product locale this account starts the game in; null = Riot's choice. */
   locale: string | null;
   lol: LolRank;
@@ -190,6 +192,14 @@ export interface BulkAddResult {
   skippedLines: number[];
 }
 
+export interface UpdateAccount {
+  name: string;
+  description: string;
+  locale: string | null;
+  password?: string;
+  skipProfileUpdate?: boolean;
+}
+
 export interface NewAccount {
   accountId: string;
   name: string;
@@ -197,6 +207,7 @@ export interface NewAccount {
   password: string;
   description: string;
   locale?: string | null;
+  skipProfileUpdate?: boolean;
 }
 
 export function parseAccountLine(line: string): Pick<NewAccount, "accountId" | "name" | "password"> | undefined {
@@ -234,14 +245,9 @@ export const api = {
   addAccount: (input: NewAccount) => call<AccountView>("add_account", { input }),
   multiAdd: (text: string, region: string, locale: string | null) =>
     call<BulkAddResult>("multi_add", { text, region, locale }),
-  /** `password` left undefined keeps the stored credential. */
-  updateAccount: (
-    key: Key,
-    name: string,
-    description: string,
-    locale: string | null,
-    password?: string,
-  ) => call<AccountView>("update_account", { key, name, description, locale, password }),
+  /** `input.password` left undefined keeps the stored credential. */
+  updateAccount: (key: Key, input: UpdateAccount) =>
+    call<AccountView>("update_account", { key, input }),
   deleteAccount: (key: Key) => call<void>("delete_account", { key }),
   refreshRanks: (force = false) => call<number>("refresh_ranks", { force }),
   copyAccountId: (key: Key) => call<void>("copy_account_id", { key }),

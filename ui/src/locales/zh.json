@@ -281,5 +281,9 @@
   "err.logs_unavailable": "无法创建日志目录。",
   "err.logs_folder": "无法打开日志目录。",
   "err.load_failed": "加载账号失败。",
-  "err.unknown": "出错了。"
+  "err.unknown": "出错了。",
+  "vn.skip": "跳过更新资料",
+  "vn.skipHint": "越南服专用：屏蔽区服身份验证域名，使登录跳过 Riot 的更新资料流程。",
+  "welcome.title": "欢迎",
+  "welcome.text": "选择界面语言，之后可以在设置中更改。"
 }

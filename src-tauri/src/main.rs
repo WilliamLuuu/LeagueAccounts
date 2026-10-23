@@ -69,6 +69,18 @@ struct SettingsInput {
     auto_update: bool,
 }
 
+/// Fields the edit dialog can change. `password: None` keeps the stored
+/// credential; an empty value is a no-op so an untouched field cannot wipe it.
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
+struct UpdateAccount {
+    name: String,
+    description: String,
+    locale: Option<String>,
+    password: Option<String>,
+    skip_profile_update: Option<bool>,
+}
+
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
 struct LocaleOption {
@@ -302,19 +314,16 @@ fn update_account(
     app: AppHandle,
     state: AppState<'_>,
     key: Key,
-    name: String,
-    description: String,
-    locale: Option<String>,
-    password: Option<String>,
-    skip_profile_update: Option<bool>,
+    input: UpdateAccount,
 ) -> CommandResult<AccountView> {
     let key = AccountKey::from(key);
-    let name = name.trim().to_owned();
-    let locale = normalize_locale(locale.as_deref())?;
-    let skip_profile_update = skip_profile_update.unwrap_or(false);
+    let name = input.name.trim().to_owned();
+    let locale = normalize_locale(input.locale.as_deref())?;
+    let skip_profile_update = input.skip_profile_update.unwrap_or(false);
     // `None` leaves the stored password alone; an empty value is a no-op too,
     // so an untouched password field cannot wipe the credential.
-    let new_password = password
+    let new_password = input
+        .password
         .as_deref()
         .map(str::trim)
         .filter(|value| !value.is_empty())
@@ -328,7 +337,7 @@ fn update_account(
             account.riot_id_not_found = false;
             RankInfo::unranked().apply_to(account);
         }
-        account.description = description.trim().to_owned();
+        account.description = input.description.trim().to_owned();
         account.locale = locale;
         account.skip_profile_update = skip_profile_update;
         let updated = account.clone();

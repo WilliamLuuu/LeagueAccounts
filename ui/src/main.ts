@@ -4,9 +4,9 @@ import "./login.css";
 import "./league.css";
 import "./client-controls.css";
 
-import { ApiError, accountLabel, api, events, keyId, keyOf, parseAccountLine, type AccountView, type Ban, type Key, type LocaleOption, type Schedule, type Settings } from "./api";
+import { ApiError, accountLabel, api, events, keyId, keyOf, parseAccountLine, type AccountView, type Ban, type Key, type LocaleOption, type Schedule, type Settings, type UpdateAccount } from "./api";
 import { openLoginOverlay, type LoginOverlay } from "./login";
-import { LANGUAGES, applyStatic, errorText, lang, localeTag, localizeRank, setLang, t, tierName, type Lang, type MessageKey } from "./i18n";
+import { LANGUAGES, applyStatic, errorText, fromBrowser, lang, localeTag, localizeRank, needsLanguageChoice, setLang, t, tierName, type Lang, type MessageKey } from "./i18n";
 import { $, closeMenu, contextMenu, esc, fragment, leave, modal, reducedMotion, toast } from "./dom";
 import { hydrateIcons, icon } from "./icons";
 import { observeSelects } from "./dropdown";
@@ -511,6 +511,11 @@ async function editAccount(account: AccountView): Promise<void> {
           <input name="password" type="password" autocomplete="new-password" placeholder="${esc(t("edit.passwordPh"))}" />
           <button type="button" class="icon-btn" data-reveal aria-label="${esc(t("add.show"))}" data-tooltip="${esc(t("add.show"))}">${icon("eye", 15)}</button>
         </div></label>
+      <label class="toggle-row">
+        <span class="toggle-text"><strong>${esc(t("vn.skip"))}</strong><span>${esc(t("vn.skipHint"))}</span></span>
+        <input type="checkbox" name="skipProfileUpdate" ${account.skipProfileUpdate ? "checked" : ""}/>
+        <span class="switch"></span>
+      </label>
       <p class="hint">${t("edit.hint")}</p>
       <p class="hint">${t("edit.localeHint")}</p>`,
     actions: [
@@ -524,8 +529,15 @@ async function editAccount(account: AccountView): Promise<void> {
       const description = $<HTMLInputElement>('[name="description"]', root).value;
       const locale = $<HTMLSelectElement>('[name="locale"]', root).value || null;
       const password = $<HTMLInputElement>('[name="password"]', root).value;
-      const updated = await guard(
-        () => api.updateAccount(keyOf(account), name, description, locale, password.trim() || undefined),
+      const skipProfileUpdate = $<HTMLInputElement>('[name="skipProfileUpdate"]', root).checked;
+      const input: UpdateAccount = {
+        name,
+        description,
+        locale,
+        password: password.trim() || undefined,
+        skipProfileUpdate,
+      };
+      const updated = await guard(() => api.updateAccount(keyOf(account), input),
         "toast.saveFailed",
       );
       if (!updated) return false;
@@ -778,6 +790,11 @@ function openAddDrawer(tab: "single" | "multi" = "single"): void {
               <input name="description" autocomplete="off" placeholder="${esc(t("edit.descriptionPh"))}" /></label>
             <label class="field"><span>${t("edit.locale")}</span>
               <div class="select-wrap full"><select name="locale">${localeOptionsHtml(lastLocale())}</select></div></label>
+            <label class="toggle-row">
+              <span class="toggle-text"><strong>${esc(t("vn.skip"))}</strong><span>${esc(t("vn.skipHint"))}</span></span>
+              <input type="checkbox" name="skipProfileUpdate"/>
+              <span class="switch"></span>
+            </label>
             <button class="btn btn-primary btn-block" type="submit">${icon("plus")} ${t("add.submit")}</button>
           </form>
           <form class="tab-panel" data-panel="multi" novalidate>
@@ -858,6 +875,7 @@ function openAddDrawer(tab: "single" | "multi" = "single"): void {
           password: value("password"),
           description: value("description"),
           locale: value("locale") || null,
+          skipProfileUpdate: single.querySelector<HTMLInputElement>('[name="skipProfileUpdate"]')?.checked ?? false,
         }),
       "toast.addFailed",
     );
@@ -1007,6 +1025,29 @@ function showShortcuts(): void {
 // ---------------------------------------------------------------- language
 
 /** Translate static markup and the option lists built in code. */
+/** First run: pick the interface language before using the app.
+ * The browser's language is preselected, not enforced. */
+async function welcomeLanguage(): Promise<void> {
+  const detected = fromBrowser(navigator.language);
+  const options = LANGUAGES.map(
+    (language) =>
+      `<option value="${language.code}"${language.code === detected ? " selected" : ""}>${esc(language.name)}</option>`,
+  ).join("");
+  await modal({
+    title: t("welcome.title"),
+    body: `
+      <p class="hint">${esc(t("welcome.text"))}</p>
+      <label class="field"><span>${esc(t("settings.language"))}</span>
+        <div class="select-wrap full"><select name="language">${options}</select></div></label>`,
+    actions: [{ label: t("common.ok"), value: "ok", kind: "primary" }],
+    onSubmit: async (_value, root) => {
+      const language = $<HTMLSelectElement>('[name="language"]', root).value as Lang;
+      changeLanguage(language);
+      return true;
+    },
+  });
+}
+
 function applyLanguage(): void {
   applyStatic();
   const friendTier = $<HTMLSelectElement>("#friend-tier");
@@ -1390,6 +1431,8 @@ async function start(): Promise<void> {
   setInterval(renderAccounts, 30_000);
   // An update found at launch shows the update screen instead of the app.
   if (!(await launchUpdate(revealApp))) await revealApp();
+  // First run: ask the user before anything else, in a language they chose.
+  if (needsLanguageChoice()) await welcomeLanguage();
   if (!IN_TAURI && import.meta.env.DEV) runDemoScene();
 }
 

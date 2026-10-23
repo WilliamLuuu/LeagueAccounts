@@ -281,5 +281,9 @@
   "err.logs_unavailable": "Impossible de créer le dossier des logs.",
   "err.logs_folder": "Impossible d'ouvrir le dossier des logs.",
   "err.load_failed": "Impossible de charger les comptes.",
-  "err.unknown": "Une erreur s'est produite."
+  "err.unknown": "Une erreur s'est produite.",
+  "vn.skip": "Ignorer la mise à jour du profil",
+  "vn.skipHint": "Pour les comptes vietnamiens : bloque le fournisseur d'identité de la région pour que la connexion ignore la mise à jour du profil.",
+  "welcome.title": "Bienvenue",
+  "welcome.text": "Choisissez la langue de l'interface. Vous pourrez la modifier plus tard dans les paramètres."
 }

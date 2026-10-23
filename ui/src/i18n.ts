@@ -56,7 +56,7 @@ const HTML_LANG: Record<Lang, string> = {
 export const localeTag = (): string => HTML_LANG[current] ?? current;
 
 /** Chinese needs the script subtag: `zh-TW`/`zh-HK`/`zh-Hant` is Traditional. */
-function fromBrowser(tag: string): Lang {
+export function fromBrowser(tag: string): Lang {
   const lower = tag.toLowerCase();
   if (lower.startsWith("zh")) {
     return /-(tw|hk|mo|hant)\b/.test(lower) ? "zhTw" : "zh";
@@ -65,19 +65,25 @@ function fromBrowser(tag: string): Lang {
   return (base in DICTS ? base : "en") as Lang;
 }
 
-function detect(): Lang {
+function detect(): Lang | null {
   try {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved && saved in DICTS) return saved as Lang;
   } catch {
     // Storage unavailable.
   }
-  return fromBrowser(navigator.language);
+  // First run: no choice stored yet. The welcome dialog asks the user instead
+  // of guessing from the browser, so the app never starts in a language the
+  // player cannot read.
+  return null;
 }
 
-let current: Lang = detect();
+let current: Lang = detect() ?? "en";
 
 export const lang = (): Lang => current;
+
+/** True until the user picks a language in the welcome dialog. */
+export const needsLanguageChoice = (): boolean => localStorage.getItem(STORAGE_KEY) === null;
 
 export function setLang(next: Lang): void {
   current = next;

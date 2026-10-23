@@ -281,5 +281,9 @@
   "err.logs_unavailable": "無法建立日誌資料夾。",
   "err.logs_folder": "無法開啟日誌資料夾。",
   "err.load_failed": "載入帳號失敗。",
-  "err.unknown": "發生錯誤。"
+  "err.unknown": "發生錯誤。",
+  "vn.skip": "跳過更新資料",
+  "vn.skipHint": "越南服專用：封鎖區服身分驗證網域，使登入跳過 Riot 的更新資料流程。",
+  "welcome.title": "歡迎",
+  "welcome.text": "選擇介面語言，之後可以在設定中更改。"
 }

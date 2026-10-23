@@ -281,5 +281,9 @@
   "err.logs_unavailable": "Log klasörü oluşturulamadı.",
   "err.logs_folder": "Log klasörü açılamadı.",
   "err.load_failed": "Hesaplar yüklenemedi.",
-  "err.unknown": "Bir şeyler ters gitti."
+  "err.unknown": "Bir şeyler ters gitti.",
+  "vn.skip": "Profil güncellemeyi atla",
+  "vn.skipHint": "Vietnam hesapları için: bölgenin kimlik sağlayıcısını engelleyerek girişin profil güncellemeyi atlamasını sağlar.",
+  "welcome.title": "Hoş geldiniz",
+  "welcome.text": "Arayüz dilini seçin. Ayarlar'dan daha sonra değiştirebilirsiniz."
 }

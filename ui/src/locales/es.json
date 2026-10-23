@@ -281,5 +281,9 @@
   "err.logs_unavailable": "No se pudo crear la carpeta de logs.",
   "err.logs_folder": "No se pudo abrir la carpeta de logs.",
   "err.load_failed": "No se pudieron cargar las cuentas.",
-  "err.unknown": "Algo salió mal."
+  "err.unknown": "Algo salió mal.",
+  "vn.skip": "Omitir la actualización del perfil",
+  "vn.skipHint": "Para cuentas vietnamitas: bloquea el proveedor de identidad de la región para que el inicio de sesión omita la actualización del perfil.",
+  "welcome.title": "Bienvenido",
+  "welcome.text": "Elige el idioma de la interfaz. Podrás cambiarlo después en Ajustes."
 }

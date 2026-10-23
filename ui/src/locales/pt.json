@@ -281,5 +281,9 @@
   "err.logs_unavailable": "Não foi possível criar a pasta de registos.",
   "err.logs_folder": "Não foi possível abrir a pasta de registos.",
   "err.load_failed": "Não foi possível carregar as contas.",
-  "err.unknown": "Ocorreu um erro."
+  "err.unknown": "Ocorreu um erro.",
+  "vn.skip": "Ignorar atualização do perfil",
+  "vn.skipHint": "Para contas vietnamitas: bloqueia o provedor de identidade da região para que o login ignore a atualização do perfil.",
+  "welcome.title": "Bem-vindo",
+  "welcome.text": "Escolha o idioma da interface. Você pode alterá-lo depois nas Configurações."
 }

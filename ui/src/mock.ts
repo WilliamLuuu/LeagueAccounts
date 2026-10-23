@@ -1,7 +1,7 @@
 // Development-only stand-in for the Tauri backend, used when the UI is opened
 // in a plain browser (`npm run dev`).
 // Never bundled into release builds. Everything lives only in memory.
-import { ApiError, api, events, keyId, parseAccountLine, type AccountView, type BulkAddResult, type Key, type LoginStep, type NewAccount, type RefreshDone, type Settings, type UpdateStatus } from "./api";
+import { ApiError, api, events, keyId, parseAccountLine, type AccountView, type BulkAddResult, type Key, type LoginStep, type NewAccount, type RefreshDone, type Settings, type UpdateAccount, type UpdateStatus } from "./api";
 
 const lol = (tier: string, division: string, lp: string, finished = "Gold II", reached = finished) => ({
   tier,
@@ -35,6 +35,8 @@ const sample: AccountView[] = [
   hasPassword: true,
   // Demo data: half the accounts pin a language, the rest follow the client.
   locale: (regionDisplay as string) === "TW" ? "zh_MY" : null,
+  // Demo data: the Vietnamese-region account shows the skip flag.
+  skipProfileUpdate: (regionDisplay as string) === "VN2",
   lol: lolRank as AccountView["lol"],
   tft: tftRank as AccountView["tft"],
   ban: accountId === "smurfy_tr" ? { until: Date.now() + (6 * 24 + 13) * 3_600_000 } : null,
@@ -171,6 +173,7 @@ export function installMock(): void {
         level: "",
         hasPassword: true,
         locale: input.locale ?? null,
+        skipProfileUpdate: input.skipProfileUpdate ?? false,
         lol: lol("Unranked", "", "", "N/A"),
         tft: tft("Unranked", "", "", "N/A"),
       };
@@ -193,11 +196,11 @@ export function installMock(): void {
       }
       return { added, skippedLines };
     },
-    updateAccount: async (key: Key, name: string, description: string, locale: string | null) => {
+    updateAccount: async (key: Key, input: UpdateAccount) => {
       const account = find(key)!;
-      name = name.trim();
+      const name = input.name.trim();
       const renamed = account.name !== name;
-      Object.assign(account, { name, description, locale });
+      Object.assign(account, { name, description: input.description, locale: input.locale });
       if (renamed) {
         Object.assign(account, { riotIdNotFound: false, level: "", lol: lol("Unranked", "", "", "N/A"), tft: tft("Unranked", "", "", "N/A") });
         const updated = name ? { ...account, level: "30", lol: lol("Silver", "II", "45", "Bronze I") } : { ...account };
