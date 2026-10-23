@@ -4,9 +4,9 @@ import "./login.css";
 import "./league.css";
 import "./client-controls.css";
 
-import { ApiError, accountLabel, api, events, keyId, keyOf, parseAccountLine, type AccountView, type Ban, type Key, type Schedule, type Settings } from "./api";
+import { ApiError, accountLabel, api, events, keyId, keyOf, parseAccountLine, type AccountView, type Ban, type Key, type LocaleOption, type Schedule, type Settings } from "./api";
 import { openLoginOverlay, type LoginOverlay } from "./login";
-import { LANGUAGES, applyStatic, errorText, lang, localizeRank, setLang, t, tierName, type Lang, type MessageKey } from "./i18n";
+import { LANGUAGES, applyStatic, errorText, lang, localeTag, localizeRank, setLang, t, tierName, type Lang, type MessageKey } from "./i18n";
 import { $, closeMenu, contextMenu, esc, fragment, leave, modal, reducedMotion, toast } from "./dom";
 import { hydrateIcons, icon } from "./icons";
 import { observeSelects } from "./dropdown";
@@ -36,6 +36,7 @@ type Sort = "rank" | "name" | "level" | "region";
 const state = {
   accounts: [] as AccountView[],
   regions: [] as string[],
+  locales: [] as LocaleOption[],
   mode: "lol" as Mode,
   view: "grid" as View,
   sort: "rank" as Sort,
@@ -140,7 +141,7 @@ function banRemaining(until: number): string {
 }
 
 const banEnd = (until: number): string =>
-  new Date(until).toLocaleString(lang(), { dateStyle: "medium", timeStyle: "short" });
+  new Date(until).toLocaleString(localeTag(), { dateStyle: "medium", timeStyle: "short" });
 
 function banChip(account: AccountView): string {
   const ban = activeBan(account);
@@ -186,8 +187,8 @@ function cardInner(account: AccountView, pending: boolean): string {
     ${account.description ? `<p class="desc" data-tooltip="${esc(account.description)}">${esc(account.description)}</p>` : `<p class="desc desc-empty"></p>`}
     <div class="card-actions">
       <button class="btn btn-play" data-act="login" data-tooltip="${esc(t("card.loginTitle"))}">${icon("login", 15)}${esc(t("card.login"))}</button>
-      <button class="icon-btn" data-act="copy-id" aria-label="${esc(t("card.copyId"))}" data-tooltip="${esc(t("card.copyId"))}">${icon("copy", 15)}</button>
-      <button class="icon-btn" data-act="copy-pass" aria-label="${esc(t("card.copyPassword"))}" data-tooltip="${esc(t("card.copyPassword"))}">${icon("key", 15)}</button>
+      <button class="icon-btn copy-btn" data-act="copy-id" aria-label="${esc(t("card.copyId"))}" data-tooltip="${esc(t("card.copyId"))}">${icon("copy", 15)}<span class="copy-label">${esc(t("card.copyIdShort"))}</span></button>
+      <button class="icon-btn copy-btn" data-act="copy-pass" aria-label="${esc(t("card.copyPassword"))}" data-tooltip="${esc(t("card.copyPassword"))}">${icon("key", 15)}<span class="copy-label">${esc(t("card.copyPasswordShort"))}</span></button>
     </div>`;
 }
 
@@ -472,7 +473,28 @@ function select(id: string | null, focus = false): void {
   });
 }
 
+/** Toggle a password field between masked and readable. */
+function wireReveal(root: ParentNode): void {
+  const reveal = root.querySelector<HTMLElement>("[data-reveal]");
+  const input = root.querySelector<HTMLInputElement>('[name="password"]');
+  if (!reveal || !input) return;
+  reveal.addEventListener("click", () => {
+    const hidden = input.type === "password";
+    input.type = hidden ? "text" : "password";
+    reveal.innerHTML = icon(hidden ? "eye-off" : "eye", 15);
+  });
+}
+
+/** `<option>` list for the per-account game language, including "Riot's choice". */
+function localeOptionsHtml(selected: string | null): string {
+  const auto = `<option value=""${selected ? "" : " selected"}>${esc(t("locale.auto"))}</option>`;
+  return auto + state.locales
+    .map((locale) => `<option value="${esc(locale.code)}"${locale.code === selected ? " selected" : ""}>${esc(locale.name)}</option>`)
+    .join("");
+}
+
 async function editAccount(account: AccountView): Promise<void> {
+  const localeOptions = localeOptionsHtml(account.locale);
   await modal({
     title: t("edit.title"),
     body: `
@@ -480,16 +502,32 @@ async function editAccount(account: AccountView): Promise<void> {
         <input name="name" value="${esc(account.name)}" placeholder="${esc(t("add.riotIdPh"))}" spellcheck="false" /></label>
       <label class="field"><span>${t("edit.description")}</span>
         <input name="description" value="${esc(account.description)}" placeholder="${esc(t("edit.descriptionPh"))}" /></label>
-      <p class="hint">${t("edit.hint")}</p>`,
+      <div class="field-row">
+        <label class="field"><span>${t("edit.locale")}</span>
+          <div class="select-wrap full"><select name="locale">${localeOptions}</select></div></label>
+      </div>
+      <label class="field"><span>${t("edit.password")}</span>
+        <div class="password">
+          <input name="password" type="password" autocomplete="new-password" placeholder="${esc(t("edit.passwordPh"))}" />
+          <button type="button" class="icon-btn" data-reveal aria-label="${esc(t("add.show"))}" data-tooltip="${esc(t("add.show"))}">${icon("eye", 15)}</button>
+        </div></label>
+      <p class="hint">${t("edit.hint")}</p>
+      <p class="hint">${t("edit.localeHint")}</p>`,
     actions: [
       { label: t("common.cancel"), value: "cancel" },
       { label: t("common.save"), value: "save", kind: "primary" },
     ],
+    onOpen: (root) => wireReveal(root),
     onSubmit: async (value, root) => {
       if (value !== "save") return true;
       const name = $<HTMLInputElement>('[name="name"]', root).value;
       const description = $<HTMLInputElement>('[name="description"]', root).value;
-      const updated = await guard(() => api.updateAccount(keyOf(account), name, description), "toast.saveFailed");
+      const locale = $<HTMLSelectElement>('[name="locale"]', root).value || null;
+      const password = $<HTMLInputElement>('[name="password"]', root).value;
+      const updated = await guard(
+        () => api.updateAccount(keyOf(account), name, description, locale, password.trim() || undefined),
+        "toast.saveFailed",
+      );
       if (!updated) return false;
       upsert(updated);
       render();
@@ -738,6 +776,8 @@ function openAddDrawer(tab: "single" | "multi" = "single"): void {
               </div></label>
             <label class="field"><span>${t("edit.description")} <em>${t("add.optional")}</em></span>
               <input name="description" autocomplete="off" placeholder="${esc(t("edit.descriptionPh"))}" /></label>
+            <label class="field"><span>${t("edit.locale")}</span>
+              <div class="select-wrap full"><select name="locale">${localeOptionsHtml(lastLocale())}</select></div></label>
             <button class="btn btn-primary btn-block" type="submit">${icon("plus")} ${t("add.submit")}</button>
           </form>
           <form class="tab-panel" data-panel="multi" novalidate>
@@ -745,6 +785,8 @@ function openAddDrawer(tab: "single" | "multi" = "single"): void {
               <textarea name="text" rows="9" spellcheck="false" placeholder="${esc(t("add.multiPh"))}"></textarea></label>
             <p class="hint">${t("add.multiHint", { format: "<code>AccountID--Name#TAG--password</code>", alt: "<code>---</code>" })} <span class="multi-count"></span></p>
             <label class="field"><span>${t("add.multiRegion")}</span><div class="select-wrap full"><select name="region">${regionOptions}</select></div></label>
+            <label class="field"><span>${t("edit.locale")}</span>
+              <div class="select-wrap full"><select name="locale">${localeOptionsHtml(lastLocale())}</select></div></label>
             <button class="btn btn-primary btn-block" type="submit">${icon("users")} ${t("add.multiSubmit")}</button>
           </form>
         </div>
@@ -781,13 +823,7 @@ function openAddDrawer(tab: "single" | "multi" = "single"): void {
   });
   $("[data-close]", overlay).addEventListener("click", close);
 
-  const reveal = $("[data-reveal]", overlay);
-  reveal.addEventListener("click", () => {
-    const input = $<HTMLInputElement>('[name="password"]', overlay);
-    const hidden = input.type === "password";
-    input.type = hidden ? "text" : "password";
-    reveal.innerHTML = icon(hidden ? "eye-off" : "eye", 15);
-  });
+  wireReveal(overlay);
 
   const textarea = $<HTMLTextAreaElement>("textarea", overlay);
   const counter = $(".multi-count", overlay);
@@ -812,6 +848,7 @@ function openAddDrawer(tab: "single" | "multi" = "single"): void {
     const button = $<HTMLButtonElement>('button[type="submit"]', single);
     button.disabled = true;
     rememberRegion(value("region"));
+    rememberLocale(value("locale"));
     const added = await guard(
       () =>
         api.addAccount({
@@ -820,6 +857,7 @@ function openAddDrawer(tab: "single" | "multi" = "single"): void {
           region: value("region"),
           password: value("password"),
           description: value("description"),
+          locale: value("locale") || null,
         }),
       "toast.addFailed",
     );
@@ -842,6 +880,7 @@ function openAddDrawer(tab: "single" | "multi" = "single"): void {
     const data = new FormData(multi);
     const text = String(data.get("text") ?? "");
     const region = String(data.get("region") ?? "");
+    const locale = String(data.get("locale") ?? "");
     if (!text.trim()) {
       shake(drawer);
       return;
@@ -852,7 +891,7 @@ function openAddDrawer(tab: "single" | "multi" = "single"): void {
     textarea.readOnly = true;
     regionSelect.disabled = true;
     try {
-      const result = await guard(() => api.multiAdd(text, region), "toast.multiFailed");
+      const result = await guard(() => api.multiAdd(text, region, locale || null), "toast.multiFailed");
       if (!result) return;
       const lines = text.split("\n");
       textarea.value = result.skippedLines.map((index) => lines[index]).join("\n");
@@ -892,6 +931,24 @@ function lastRegion(): string {
 function rememberRegion(region: string): void {
   try {
     localStorage.setItem("leagueaccounts.region", region);
+  } catch {
+    // Non-essential.
+  }
+}
+
+/** Last language picked in the add drawer, so adding several accounts is quick. */
+function lastLocale(): string | null {
+  try {
+    return localStorage.getItem("leagueaccounts.locale") || null;
+  } catch {
+    return null;
+  }
+}
+
+function rememberLocale(locale: string): void {
+  try {
+    if (locale) localStorage.setItem("leagueaccounts.locale", locale);
+    else localStorage.removeItem("leagueaccounts.locale");
   } catch {
     // Non-essential.
   }
@@ -1319,6 +1376,7 @@ async function start(): Promise<void> {
   const boot = await api.bootstrap();
   state.accounts = boot.accounts;
   state.regions = boot.regions;
+  state.locales = boot.locales;
   state.settings = boot.settings;
   state.schedule = boot.schedule;
   $("#version").textContent = `v${boot.version}`;

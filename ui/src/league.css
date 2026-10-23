@@ -172,12 +172,13 @@ button:focus-visible, a:focus-visible { color: #f0e6d2; }
 .accounts.list .lp-bar { margin: 5px 0 0; }
 .accounts.list .game-name { font-size: 17px; }
 .accounts.list .meta { gap: 7px; flex-wrap: wrap; }
-.accounts.list .acc-id { display: none; }
+/* The account ID is what the copy button copies, so the row must show it. */
+.accounts.list .acc-id { display: inline-flex; font-size: 10.5px; margin-left: 0; max-width: 190px; }
 .accounts.list .history { border: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
 .accounts.list .desc { display: none; }
-.accounts.list .card-actions { gap: 3px; }
+.accounts.list .card-actions { gap: 5px; }
 .accounts.list .btn-play { padding: 0 11px; }
-.accounts.list .card-actions .icon-btn { width: 27px; }
+.accounts.list .card-actions .copy-btn { height: 27px; padding: 0 8px; font-size: 11px; }
 .empty-art { filter: none; animation: none; opacity: .7; }
 .empty h2, .drawer-head h2, .modal-head h2, .login-title { font-family: Beaufort, serif; letter-spacing: .04em; }
 .empty h2 { text-transform: uppercase; font-size: 24px; }
@@ -271,7 +272,8 @@ button:focus-visible, a:focus-visible { color: #f0e6d2; }
   .select-label { display: none; }
   .accounts.list .card { grid-template-columns: minmax(155px,1fr) minmax(185px,1fr) auto; gap: 14px; }
   .accounts.list .history { display: none; }
-  .accounts.list .card-actions .icon-btn { display: none; }
+  .accounts.list .card-actions .copy-btn .copy-label { display: none; }
+  .accounts.list .card-actions .copy-btn { width: 27px; padding: 0; }
   .accounts.list .card-more { display: flex; }
 }
 @media (max-height: 730px) {

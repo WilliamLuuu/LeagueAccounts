@@ -952,6 +952,27 @@ code {
   height: 34px;
   border: 1px solid var(--line);
 }
+/* Copy actions carry a short caption: two unlabeled icons were ambiguous. */
+.card-actions .copy-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  gap: 6px;
+  padding: 0 10px;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.card-actions .copy-btn .copy-label {
+  line-height: 1;
+}
+.card-actions .copy-btn:hover {
+  color: var(--accent);
+  border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+}
 
 /* List view */
 .accounts.list .card {
@@ -983,6 +1004,12 @@ code {
 }
 .accounts.list .card-actions {
   margin: 0;
+}
+/* List rows keep the copy actions; only the play button stays compact. */
+.accounts.list .card-actions .copy-btn {
+  width: auto;
+  min-width: 34px;
+  padding: 0 9px;
 }
 .accounts.list .btn-play {
   flex: none;

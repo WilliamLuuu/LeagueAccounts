@@ -123,6 +123,8 @@ export interface AccountView {
   description: string;
   level: string;
   hasPassword: boolean;
+  /** Product locale this account starts the game in; null = Riot's choice. */
+  locale: string | null;
   lol: LolRank;
   tft: TftRank;
   /** League suspension reported at the last Riot sign-in; `until` is null when permanent. */
@@ -162,9 +164,15 @@ export interface RefreshStarted {
   auto: boolean;
 }
 
+export interface LocaleOption {
+  code: string;
+  name: string;
+}
+
 export interface Bootstrap {
   accounts: AccountView[];
   regions: string[];
+  locales: LocaleOption[];
   version: string;
   loggingAvailable: boolean;
   loadError: ErrorPayload | null;
@@ -188,6 +196,7 @@ export interface NewAccount {
   region: string;
   password: string;
   description: string;
+  locale?: string | null;
 }
 
 export function parseAccountLine(line: string): Pick<NewAccount, "accountId" | "name" | "password"> | undefined {
@@ -223,9 +232,16 @@ export const api = {
   bootstrap: () => call<Bootstrap>("bootstrap"),
   listAccounts: () => call<AccountView[]>("list_accounts"),
   addAccount: (input: NewAccount) => call<AccountView>("add_account", { input }),
-  multiAdd: (text: string, region: string) => call<BulkAddResult>("multi_add", { text, region }),
-  updateAccount: (key: Key, name: string, description: string) =>
-    call<AccountView>("update_account", { key, name, description }),
+  multiAdd: (text: string, region: string, locale: string | null) =>
+    call<BulkAddResult>("multi_add", { text, region, locale }),
+  /** `password` left undefined keeps the stored credential. */
+  updateAccount: (
+    key: Key,
+    name: string,
+    description: string,
+    locale: string | null,
+    password?: string,
+  ) => call<AccountView>("update_account", { key, name, description, locale, password }),
   deleteAccount: (key: Key) => call<void>("delete_account", { key }),
   refreshRanks: (force = false) => call<number>("refresh_ranks", { force }),
   copyAccountId: (key: Key) => call<void>("copy_account_id", { key }),
