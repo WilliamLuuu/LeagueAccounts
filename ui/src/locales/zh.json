@@ -288,6 +288,14 @@
   "welcome.text": "选择界面语言，之后可以在设置中更改。",
   "vn.homepageWarning": "游戏语言为 zh_CN 时，客户端首页的活动中心内容可能加载失败（Riot 未为 zh_CN 配置全部页面，LCU 返回 400）。这是内容源限制，不是本工具或客户端损坏。可改用 zh_MY/zh_TW 避开，或安装 ABC 作者的 zh-cn-home-locale（Pengu Loader 插件）自动回退 zh_TW 内容。",
   "vn.homepageNote": "游戏语言为 zh_CN 时，客户端首页的活动中心内容可能加载失败（Riot 未为 zh_CN 配置全部页面，LCU 返回 400）。ABC 作者的 zh-cn-home-locale（Pengu Loader 插件）可自动回退 zh_TW 内容；本工具未内置该修复。",
-  "locale.homeBroken": "主页异常",
-  "locale.homeWarning": "zh_CN（中国）可以安装，但 Riot 没有为它发布全部主页内容，客户端主页会打不开。可改用 zh_MY / zh_TW；若必须用 zh_CN，需安装 ABC 作者的 zh-cn-home-locale（Pengu Loader 插件）才能修复主页。"
+  "locale.homeBroken": "主页打不开",
+  "locale.fixTitle": "选择游戏语言",
+  "locale.fixBody": "简体中文（中国大陆）可以安装，但 Riot 没有为它发布全部主页内容，客户端主页会打不开。",
+  "locale.fixPartial": "推荐改用简体中文（马来西亚）或繁體中文（中國台灣）：两者与简体中文（中国大陆）只有部分翻译用词不同，主页可以正常显示。",
+  "locale.fixInsist": "如果坚持使用简体中文（中国大陆），可以安装 Awesome_ABC 作者的插件修复主页：",
+  "locale.fixAuthor": "打开作者主页（Bilibili）",
+  "locale.fixZhMy": "简体中文（马来西亚）",
+  "locale.fixZhTw": "繁體中文（中國台灣）",
+  "locale.keepZhCn": "仍用简体中文（中国大陆）",
+  "toast.browserFailed": "无法打开浏览器"
 }

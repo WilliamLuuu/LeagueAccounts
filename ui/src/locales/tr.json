@@ -289,5 +289,13 @@
   "vn.homepageNote": "Oyun dili zh_CN iken ana sayfadaki etkinlik merkezi icerigi yuklenemeyebilir (Riot her sayfayi zh_CN icin yayinlamiyor ve LCU 400 donduruyor). ABC'nin zh-cn-home-locale eklentisi (Pengu Loader eklentisi) otomatik olarak zh_TW icerigine duser; bu arac o duzeltmeyi icermez.",
   "vn.homepageWarning": "Oyun dili zh_CN iken ana sayfadaki etkinlik merkezi icerigi yuklenemeyebilir (Riot her sayfayi zh_CN icin yayinlamiyor, LCU 400 donduruyor). Bu bir icerik kaynagi sinirlamasidir; arac veya istemci hatasi degildir. Ondeginmek icin zh_MY/zh_TW kullanin veya ABC'nin zh-cn-home-locale (Pengu Loader eklentisi) eklentisini kurup otomatik zh_TW icerigine dusebilirsiniz.",
   "locale.homeBroken": "ana sayfa bozuk",
-  "locale.homeWarning": "zh_CN (Çin) kurulabilir, ancak Riot ana sayfa varlıklarının tamamını bu yerel ayar için yayınlamadı; bu yüzden istemci ana sayfası açılmaz. Bunun yerine zh_MY veya zh_TW kullanın; zh_CN'de kalmanız gerekiyorsa ana sayfayı düzeltmek için ABC'nin zh-cn-home-locale eklentisini (Pengu Loader eklentisi) kurun."
+  "locale.fixTitle": "Oyun dilini seçin",
+  "locale.fixBody": "Basitleştirilmiş Çince (Çin anakarası) sorunsuz kurulur, ancak Riot ana sayfa varlıklarının tamamını bu dil için yayınlamadı; istemci ana sayfası açılmaz.",
+  "locale.fixPartial": "Bunun yerine Basitleştirilmiş Çince (Malezya) veya Geleneksel Çince (Tayvan, Çin) önerilir: bunlar Basitleştirilmiş Çince (Çin anakarası) ile yalnızca bazı sözcüklerde ayrılır ve ana sayfa görüntülenir.",
+  "locale.fixInsist": "Yine de Basitleştirilmiş Çince (Çin anakarası) kullanmak istiyorsanız, Awesome_ABC'nin eklentisi ana sayfayı onarır:",
+  "locale.fixAuthor": "Yazarın sayfasını aç (Bilibili)",
+  "locale.fixZhMy": "Basitleştirilmiş (Malezya)",
+  "locale.fixZhTw": "Geleneksel (Tayvan, Çin)",
+  "locale.keepZhCn": "zh_CN kalsın",
+  "toast.browserFailed": "Tarayıcı açılamadı"
 }

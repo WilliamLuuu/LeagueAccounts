@@ -289,5 +289,13 @@
   "vn.homepageNote": "Com o idioma do jogo em zh_CN, o conteudo da central de atividades da pagina inicial pode falhar (a Riot nao publica todas as paginas em zh_CN e o LCU retorna 400). O plugin zh-cn-home-locale da ABC (plugin do Pengu Loader) volta automaticamente ao conteudo zh_TW; esta ferramenta nao o inclui.",
   "vn.homepageWarning": "Com o idioma do jogo em zh_CN, o conteudo da central de atividades da pagina inicial pode falhar (a Riot nao publica todas as paginas em zh_CN e o LCU retorna 400). E uma limitacao da fonte de conteudo, nao um defeito da ferramenta ou do cliente. Use zh_MY/zh_TW para evitar, ou instale o zh-cn-home-locale da ABC (plugin do Pengu Loader) para voltar automaticamente ao conteudo zh_TW.",
   "locale.homeBroken": "página inicial quebrada",
-  "locale.homeWarning": "zh_CN (China) pode ser instalado, mas a Riot nunca publicou todos os recursos da página inicial para esse idioma, então a página inicial do cliente não abrirá. Use zh_MY ou zh_TW; se precisar manter zh_CN, instale o zh-cn-home-locale da ABC (um plugin do Pengu Loader) para corrigir a página inicial."
+  "locale.fixTitle": "Escolher o idioma do jogo",
+  "locale.fixBody": "O chinês simplificado (China continental) instala normalmente, mas a Riot nunca publicou todos os recursos da página inicial para ele, então a página inicial do cliente não abrirá.",
+  "locale.fixPartial": "Recomenda-se chinês simplificado (Malásia) ou chinês tradicional (Taiwan, China): eles diferem do chinês simplificado (China continental) apenas em algumas palavras, e a página inicial é exibida.",
+  "locale.fixInsist": "Se ainda quiser o chinês simplificado (China continental), o plugin do Awesome_ABC corrige a página inicial:",
+  "locale.fixAuthor": "Abrir a página do autor (Bilibili)",
+  "locale.fixZhMy": "Simplificado (Malásia)",
+  "locale.fixZhTw": "Tradicional (Taiwan, China)",
+  "locale.keepZhCn": "Manter zh_CN",
+  "toast.browserFailed": "Não foi possível abrir o navegador"
 }

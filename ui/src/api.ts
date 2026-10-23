@@ -271,6 +271,8 @@ export const api = {
   importData: (title: string) => call<BatchResult | null>("import_data", { title }),
   openProfile: (key: Key, tft: boolean) => call<void>("open_profile", { key, tft }),
   openLogsFolder: () => call<void>("open_logs_folder"),
+  /** Opens ABC's Bilibili page, where the zh-cn-home-locale plugin lives. */
+  openHomeFixAuthor: () => call<void>("open_home_fix_author"),
 };
 
 export const events = {

@@ -1164,9 +1164,28 @@ code {
 }
 .modal-foot {
   display: flex;
+  flex-wrap: wrap;
   justify-content: flex-end;
   gap: 10px;
   padding: 0 22px 20px;
+}
+/* The client frame docks its actions absolutely centred on the bottom rail,
+   so a wide label set cannot widen the footer. Stacking keeps long locale
+   names inside the frame instead of overflowing both edges. */
+.modal-foot.is-stacked {
+  position: static;
+  transform: none;
+  flex-direction: column-reverse;
+  align-items: stretch;
+  padding: 0 22px 20px;
+}
+.modal-foot.is-stacked::before,
+.modal-foot.is-stacked::after {
+  content: none;
+}
+.modal-foot.is-stacked .btn {
+  min-width: 0;
+  width: 100%;
 }
 
 .drawer-overlay {

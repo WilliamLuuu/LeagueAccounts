@@ -289,5 +289,13 @@
   "vn.homepageNote": "Quand la langue du jeu est zh_CN, le contenu du centre d'activites de la page d'accueil peut echouer (Riot ne publie pas toutes les pages en zh_CN, et le LCU renvoie 400). Le plugin zh-cn-home-locale d'ABC (plugin Pengu Loader) retombe sur le contenu zh_TW ; cet outil ne l'embarque pas.",
   "vn.homepageWarning": "Quand la langue du jeu est zh_CN, le contenu du centre d'activites de la page d'accueil peut echouer (Riot ne publie pas toutes les pages en zh_CN, le LCU renvoie 400). C'est une limite de la source de contenu, pas un defaut de l'outil ou du client. Passez en zh_MY/zh_TW pour l'eviter, ou installez zh-cn-home-locale d'ABC (plugin Pengu Loader) pour retomber sur le contenu zh_TW automatiquement.",
   "locale.homeBroken": "page d'accueil cassée",
-  "locale.homeWarning": "zh_CN (Chine) est installable, mais Riot n'a jamais publié tous les éléments de la page d'accueil pour cette locale : la page d'accueil du client ne s'ouvrira pas. Utilisez zh_MY ou zh_TW ; si vous devez garder zh_CN, installez zh-cn-home-locale d'ABC (un plugin Pengu Loader) pour réparer la page d'accueil."
+  "locale.fixTitle": "Choisir la langue du jeu",
+  "locale.fixBody": "Le chinois simplifié (Chine continentale) s'installe, mais Riot n'a jamais publié tous les éléments de la page d'accueil pour cette langue : la page d'accueil du client ne s'ouvrira pas.",
+  "locale.fixPartial": "Le chinois simplifié (Malaisie) ou le chinois traditionnel (Taïwan, Chine) sont recommandés : ils ne diffèrent du chinois simplifié (Chine continentale) que par certains termes, et la page d'accueil s'affiche.",
+  "locale.fixInsist": "Si vous tenez au chinois simplifié (Chine continentale), le plugin d'Awesome_ABC répare la page d'accueil :",
+  "locale.fixAuthor": "Ouvrir la page de l'auteur (Bilibili)",
+  "locale.fixZhMy": "Simplifié (Malaisie)",
+  "locale.fixZhTw": "Traditionnel (Taïwan, Chine)",
+  "locale.keepZhCn": "Garder zh_CN",
+  "toast.browserFailed": "Impossible d'ouvrir le navigateur"
 }

@@ -289,5 +289,13 @@
   "vn.homepageNote": "Con el idioma del juego en zh_CN, el contenido del centro de actividades de la pagina de inicio puede fallar (Riot no publica todas las paginas en zh_CN y el LCU devuelve 400). El plugin zh-cn-home-locale de ABC (plugin de Pengu Loader) recurre al contenido zh_TW; esta herramienta no lo incluye.",
   "vn.homepageWarning": "Con el idioma del juego en zh_CN, el contenido del centro de actividades de la pagina de inicio puede fallar (Riot no publica todas las paginas en zh_CN y el LCU devuelve 400). Es una limitacion de la fuente de contenido, no un defecto de esta herramienta o del cliente. Cambia a zh_MY/zh_TW para evitarlo, o instala zh-cn-home-locale de ABC (plugin de Pengu Loader) para recurrir al contenido zh_TW automaticamente.",
   "locale.homeBroken": "página de inicio rota",
-  "locale.homeWarning": "zh_CN (China) se puede instalar, pero Riot nunca publicó todos los recursos de la página de inicio para ese idioma, así que la página de inicio del cliente no se abrirá. Usa zh_MY o zh_TW; si debes conservar zh_CN, instala zh-cn-home-locale de ABC (un plugin de Pengu Loader) para arreglar la página de inicio."
+  "locale.fixTitle": "Elegir el idioma del juego",
+  "locale.fixBody": "El chino simplificado (China continental) se instala bien, pero Riot nunca publicó todos los recursos de la página de inicio para ese idioma, así que la página de inicio del cliente no se abrirá.",
+  "locale.fixPartial": "Se recomienda el chino simplificado (Malasia) o el chino tradicional (Taiwán, China): solo difieren del chino simplificado (China continental) en algunas palabras y la página de inicio se muestra.",
+  "locale.fixInsist": "Si aun así quieres el chino simplificado (China continental), el plugin de Awesome_ABC repara la página de inicio:",
+  "locale.fixAuthor": "Abrir la página del autor (Bilibili)",
+  "locale.fixZhMy": "Simplificado (Malasia)",
+  "locale.fixZhTw": "Tradicional (Taiwán, China)",
+  "locale.keepZhCn": "Mantener zh_CN",
+  "toast.browserFailed": "No se pudo abrir el navegador"
 }

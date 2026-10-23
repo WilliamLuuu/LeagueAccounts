@@ -120,9 +120,9 @@ export function installMock(): void {
       regions: ["EUW", "EUNE", "NA", "KR", "TR", "BR"],
       locales: [
         { code: "en_US", name: "English (United States)", homePageWorks: true },
-        { code: "zh_CN", name: "中文（中国）", homePageWorks: false },
-        { code: "zh_MY", name: "中文（马来西亚）", homePageWorks: true },
-        { code: "zh_TW", name: "中文（台灣）", homePageWorks: true },
+        { code: "zh_CN", name: "简体中文（中国大陆）", homePageWorks: false },
+        { code: "zh_MY", name: "简体中文（马来西亚）", homePageWorks: true },
+        { code: "zh_TW", name: "繁體中文（中國台灣）", homePageWorks: true },
         { code: "ja_JP", name: "日本語", homePageWorks: true },
         { code: "ko_KR", name: "한국어", homePageWorks: true },
       ],
@@ -222,6 +222,7 @@ export function installMock(): void {
     importData: async () => null,
     openProfile: async () => {},
     openLogsFolder: async () => {},
+    openHomeFixAuthor: async () => {},
   } satisfies typeof api);
   Object.assign(events, {
     onLoginStep: async (handler: Handler<LoginStep>) => (listeners.step.push(handler), unlisten()),

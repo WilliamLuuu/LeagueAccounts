@@ -713,6 +713,18 @@ fn open_release(url: String) -> CommandResult<()> {
         .map_err(|_| fail("browser"))
 }
 
+/// Open ABC's Bilibili page, where the zh-cn-home-locale Pengu plugin is
+/// published. The URL is fixed here rather than passed in from the UI so the
+/// command cannot be repurposed to open an arbitrary link.
+#[tauri::command]
+fn open_home_fix_author() -> CommandResult<()> {
+    std::process::Command::new("explorer.exe")
+        .arg("https://space.bilibili.com/230327779")
+        .spawn()
+        .map(|_| ())
+        .map_err(|_| fail("browser"))
+}
+
 #[tauri::command]
 fn open_logs_folder() -> CommandResult<()> {
     // Fall back to the default location when file logging failed to start,
@@ -834,6 +846,7 @@ fn main() {
             restart_to_update,
             open_release,
             open_logs_folder,
+            open_home_fix_author,
         ])
         .setup(move |app| {
             if let Some(window) = app.get_webview_window("main") {

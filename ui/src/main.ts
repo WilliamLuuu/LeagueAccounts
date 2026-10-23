@@ -496,19 +496,58 @@ function localeOptionsHtml(selected: string | null): string {
     .join("");
 }
 
-/// Keep the zh_CN home-page warning in sync with the language dropdown.
-/// Both dialogs share the paragraph and the select, so the note is written
-/// once and toggled from here instead of being duplicated per dialog.
-function syncHomeWarning(root: ParentNode): void {
-  const select = root.querySelector<HTMLSelectElement>("select[name=locale]");
-  const note = root.querySelector<HTMLElement>("[data-home-warning]");
-  if (!select || !note) return;
-  const update = () => {
-    const chosen = state.locales.find((locale) => locale.code === select.value);
-    note.hidden = !chosen || chosen.homePageWorks;
-  };
-  select.addEventListener("change", update);
-  update();
+/**
+ * Picking `zh_CN` silently costs the user the client's home page, so ask
+ * before it is kept. The dialog offers the two locales that render it and,
+ * for anyone who insists on `zh_CN`, the external plugin that repairs it.
+ * Resolves with the locale to use, or null when the pick is unchanged.
+ */
+async function askHomeFix(select: HTMLSelectElement, chosen: string): Promise<void> {
+  const locale = state.locales.find((entry) => entry.code === chosen);
+  if (!locale || locale.homePageWorks) return;
+  const previous = select.dataset.previous ?? "";
+  const choice = await modal({
+    title: t("locale.fixTitle"),
+    body: `
+      <p class="hint">${t("locale.fixBody")}</p>
+      <p class="hint">${t("locale.fixPartial")}</p>
+      <p class="hint">${t("locale.fixInsist")}</p>
+      <button type="button" class="btn btn-ghost btn-block" data-author-link>${t("locale.fixAuthor")}</button>`,
+    actions: [
+      { label: t("locale.fixZhMy"), value: "zh_MY", kind: "primary" },
+      { label: t("locale.fixZhTw"), value: "zh_TW" },
+      { label: t("locale.keepZhCn"), value: "keep" },
+    ],
+    stacked: true,
+    onOpen: (root) => {
+      root.querySelector<HTMLElement>("[data-author-link]")?.addEventListener("click", () => {
+        void guard(() => api.openHomeFixAuthor(), "toast.browserFailed");
+      });
+    },
+  });
+  if (choice === null) {
+    select.value = previous;
+    return;
+  }
+  select.value = choice === "keep" ? chosen : choice;
+  select.dataset.previous = select.value;
+}
+
+/// Ask before a broken-home-page language is kept, and remember the last
+/// good pick so dismissing the dialog can put it back.
+function wireHomeFix(select: HTMLSelectElement): void {
+  select.dataset.previous = select.value;
+  select.addEventListener("change", () => {
+    const chosen = select.value;
+    const locale = state.locales.find((entry) => entry.code === chosen);
+    if (!locale || locale.homePageWorks) {
+      // A good pick is remembered immediately; the prompt would have no
+      // earlier value to fall back to otherwise.
+      select.dataset.previous = chosen;
+      return;
+    }
+    void askHomeFix(select, chosen);
+  });
 }
 
 async function editAccount(account: AccountView): Promise<void> {
@@ -535,13 +574,12 @@ async function editAccount(account: AccountView): Promise<void> {
         <span class="switch"></span>
       </label>
       <p class="hint">${t("edit.hint")}</p>
-      <p class="hint">${t("edit.localeHint")}</p>
-      <p class="hint warn" data-home-warning hidden>${t("locale.homeWarning")}</p>`,
+      <p class="hint">${t("edit.localeHint")}</p>`,
     actions: [
       { label: t("common.cancel"), value: "cancel" },
       { label: t("common.save"), value: "save", kind: "primary" },
     ],
-    onOpen: (root) => { wireReveal(root); syncHomeWarning(root); },
+    onOpen: (root) => { wireReveal(root); wireHomeFix($<HTMLSelectElement>('[name="locale"]', root)); },
     onSubmit: async (value, root) => {
       if (value !== "save") return true;
       const name = $<HTMLInputElement>('[name="name"]', root).value;
@@ -809,7 +847,6 @@ function openAddDrawer(tab: "single" | "multi" = "single"): void {
               <input name="description" autocomplete="off" placeholder="${esc(t("edit.descriptionPh"))}" /></label>
             <label class="field"><span>${t("edit.locale")}</span>
               <div class="select-wrap full"><select name="locale">${localeOptionsHtml(lastLocale())}</select></div></label>
-            <p class="hint warn" data-home-warning hidden>${t("locale.homeWarning")}</p>
             <label class="toggle-row">
               <span class="toggle-text"><strong>${esc(t("vn.skip"))}</strong><span>${esc(t("vn.skipHint"))}</span></span>
               <input type="checkbox" name="skipProfileUpdate"/>
@@ -824,7 +861,6 @@ function openAddDrawer(tab: "single" | "multi" = "single"): void {
             <label class="field"><span>${t("add.multiRegion")}</span><div class="select-wrap full"><select name="region">${regionOptions}</select></div></label>
             <label class="field"><span>${t("edit.locale")}</span>
               <div class="select-wrap full"><select name="locale">${localeOptionsHtml(lastLocale())}</select></div></label>
-            <p class="hint warn" data-home-warning hidden>${t("locale.homeWarning")}</p>
             <button class="btn btn-primary btn-block" type="submit">${icon("users")} ${t("add.multiSubmit")}</button>
           </form>
         </div>
@@ -850,7 +886,9 @@ function openAddDrawer(tab: "single" | "multi" = "single"): void {
     void leave(overlay, "drawer-out");
   };
   const onKey = (event: KeyboardEvent) => {
-    if (event.key === "Escape") {
+    // A modal opened from the drawer (the zh_CN language prompt) owns Escape
+    // while it is up; closing the drawer underneath it would discard the form.
+    if (event.key === "Escape" && !document.querySelector("#modal-root .modal")) {
       event.stopPropagation();
       close();
     }
@@ -863,7 +901,7 @@ function openAddDrawer(tab: "single" | "multi" = "single"): void {
 
   wireReveal(overlay);
   // Both panels carry their own language select; each needs its own listener.
-  overlay.querySelectorAll<HTMLElement>("[data-panel]").forEach(syncHomeWarning);
+  overlay.querySelectorAll<HTMLSelectElement>('select[name="locale"]').forEach(wireHomeFix);
 
   const textarea = $<HTMLTextAreaElement>("textarea", overlay);
   const counter = $(".multi-count", overlay);

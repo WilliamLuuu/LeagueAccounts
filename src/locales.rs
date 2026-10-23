@@ -45,9 +45,11 @@ pub fn locale_name(locale: &str) -> &'static str {
         "th_TH" => "ไทย",
         "tr_TR" => "Türkçe",
         "vi_VN" => "Tiếng Việt",
-        "zh_CN" => "中文（中国）",
-        "zh_MY" => "中文（马来西亚）",
-        "zh_TW" => "中文（台灣）",
+        // Named by script first: `zh_CN` and `zh_MY` are both Simplified, so
+        // "Simplified/Traditional" is what tells them apart in the picker.
+        "zh_CN" => "简体中文（中国大陆）",
+        "zh_MY" => "简体中文（马来西亚）",
+        "zh_TW" => "繁體中文（中國台灣）",
         _ => "English (United States)",
     }
 }

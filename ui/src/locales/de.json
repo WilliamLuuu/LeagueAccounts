@@ -289,5 +289,13 @@
   "vn.homepageNote": "Bei Spielsprache zh_CN kann der Aktivitaetscenter-Inhalt der Startseite fehlschlagen (Riot publiziert nicht jede Seite fuer zh_CN, der LCU antwortet mit 400). ABCs zh-cn-home-locale-Plugin (Pengu-Loader-Plugin) faellt automatisch auf zh_TW zurueck; dieses Tool bündelt das nicht.",
   "vn.homepageWarning": "Bei Spielsprache zh_CN kann der Aktivitaetscenter-Inhalt der Startseite fehlschlagen (Riot publiziert nicht jede Seite fuer zh_CN, der LCU antwortet mit 400). Das ist eine Einschraenkung der Inhaltsquelle, kein Defekt von Tool oder Client. Weichen Sie auf zh_MY/zh_TW aus oder installieren Sie ABCs zh-cn-home-locale (Pengu-Loader-Plugin) fuer automatisches Zurueckfallen auf zh_TW.",
   "locale.homeBroken": "Startseite defekt",
-  "locale.homeWarning": "zh_CN (China) ist installierbar, aber Riot hat nicht alle Startseiten-Ressourcen dafür veröffentlicht, daher öffnet sich die Startseite des Clients nicht. Verwenden Sie stattdessen zh_MY oder zh_TW; falls Sie zh_CN behalten müssen, installieren Sie ABCs zh-cn-home-locale (ein Pengu-Loader-Plugin), um die Startseite zu reparieren."
+  "locale.fixTitle": "Spielsprache wählen",
+  "locale.fixBody": "Vereinfachtes Chinesisch (Festlandchina) lässt sich installieren, aber Riot hat nicht alle Startseiten-Ressourcen dafür veröffentlicht, daher öffnet sich die Startseite des Clients nicht.",
+  "locale.fixPartial": "Empfohlen sind Vereinfachtes Chinesisch (Malaysia) oder Traditionelles Chinesisch (Taiwan, China): Sie unterscheiden sich von Vereinfachtem Chinesisch (Festlandchina) nur in manchen Wörtern, und die Startseite wird angezeigt.",
+  "locale.fixInsist": "Wenn Sie dennoch Vereinfachtes Chinesisch (Festlandchina) möchten, repariert das Plugin von Awesome_ABC die Startseite:",
+  "locale.fixAuthor": "Seite des Autors öffnen (Bilibili)",
+  "locale.fixZhMy": "Vereinfacht (Malaysia)",
+  "locale.fixZhTw": "Traditionell (Taiwan, China)",
+  "locale.keepZhCn": "zh_CN behalten",
+  "toast.browserFailed": "Browser konnte nicht geöffnet werden"
 }

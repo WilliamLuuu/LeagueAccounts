@@ -289,5 +289,13 @@
   "vn.homepageWarning": "When the game language is zh_CN, home-page activity-center content may fail to load (Riot does not publish every page for zh_CN, and the LCU returns 400). This is a content-source limitation, not a tool or client defect. Switch to zh_MY/zh_TW to avoid it, or install ABC's zh-cn-home-locale (a Pengu Loader plugin) to fall back to zh_TW content automatically.",
   "vn.homepageNote": "When the game language is zh_CN, home-page activity-center content may fail to load (Riot does not publish every page for zh_CN, and the LCU returns 400). ABC's zh-cn-home-locale plugin (a Pengu Loader plugin) falls back to zh_TW content automatically; this tool does not bundle that fix.",
   "locale.homeBroken": "home page broken",
-  "locale.homeWarning": "zh_CN (China) is installable, but Riot never published every home-page asset for it, so the client home page will not open. Use zh_MY or zh_TW instead; if you must keep zh_CN, install ABC's zh-cn-home-locale (a Pengu Loader plugin) to fix the home page."
+  "locale.fixTitle": "Choose a game language",
+  "locale.fixBody": "Simplified Chinese (Mainland China) installs fine, but Riot never published every home-page asset for it, so the client home page will not open.",
+  "locale.fixPartial": "Simplified Chinese (Malaysia) or Traditional Chinese (Taiwan, China) are recommended instead: they differ from Simplified Chinese (Mainland China) only in some wording, and the home page renders.",
+  "locale.fixInsist": "If you want Simplified Chinese (Mainland China) anyway, Awesome_ABC's plugin repairs the home page:",
+  "locale.fixAuthor": "Open the author's page (Bilibili)",
+  "locale.fixZhMy": "Simplified (Malaysia)",
+  "locale.fixZhTw": "Traditional (Taiwan, China)",
+  "locale.keepZhCn": "Keep zh_CN",
+  "toast.browserFailed": "Couldn't open the browser"
 }
