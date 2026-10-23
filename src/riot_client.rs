@@ -767,6 +767,9 @@ fn close_league(cancel: &AtomicBool) -> Result<(), LoginError> {
         if force {
             command.arg("/F");
         }
+        // `/T` also ends the crash handler and renderer children, which are not
+        // in `names` and would otherwise keep the tree alive.
+        command.arg("/T");
         for name in &names {
             command.args(["/IM", name]);
         }
