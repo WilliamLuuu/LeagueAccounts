@@ -286,6 +286,8 @@
   "vn.skipHint": "For Vietnamese accounts: blocks the region's identity provider so the login skips Riot's profile-update flow.",
   "welcome.title": "Welcome",
   "welcome.text": "Choose the interface language. You can change it later in Settings.",
-  "vn.homepageWarning": "When the game language is Simplified Chinese (zh_CN), the client home page may render blank or with missing tiles. This is a Riot limitation for zh_CN assets. ABC patches around it; this tool does not. If the home page looks broken, switch the game language to zh_MY or zh_TW in Settings.",
-  "vn.homepageNote": "The client home page may render with missing tiles. ABC patches around it; this tool does not."
+  "vn.homepageWarning": "When the game language is zh_CN, home-page activity-center content may fail to load (Riot does not publish every page for zh_CN, and the LCU returns 400). This is a content-source limitation, not a tool or client defect. Switch to zh_MY/zh_TW to avoid it, or install ABC's zh-cn-home-locale (a Pengu Loader plugin) to fall back to zh_TW content automatically.",
+  "vn.homepageNote": "When the game language is zh_CN, home-page activity-center content may fail to load (Riot does not publish every page for zh_CN, and the LCU returns 400). ABC's zh-cn-home-locale plugin (a Pengu Loader plugin) falls back to zh_TW content automatically; this tool does not bundle that fix.",
+  "locale.homeBroken": "home page broken",
+  "locale.homeWarning": "zh_CN (China) is installable, but Riot never published every home-page asset for it, so the client home page will not open. Use zh_MY or zh_TW instead; if you must keep zh_CN, install ABC's zh-cn-home-locale (a Pengu Loader plugin) to fix the home page."
 }

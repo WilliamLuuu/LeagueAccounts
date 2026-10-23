@@ -286,6 +286,8 @@
   "vn.skipHint": "Para contas vietnamitas: bloqueia o provedor de identidade da região para que o login ignore a atualização do perfil.",
   "welcome.title": "Bem-vindo",
   "welcome.text": "Escolha o idioma da interface. Você pode alterá-lo depois nas Configurações.",
-  "vn.homepageNote": "A página inicial do cliente pode exibir mosaicos faltando. ABC aplica um patch; esta ferramenta não.",
-  "vn.homepageWarning": "Quando o idioma do jogo e chines simplificado (zh_CN), a pagina inicial do cliente pode aparecer em branco ou com mosaicos faltando. E uma limitacao da Riot para recursos zh_CN; a ABC aplica um patch, esta ferramenta nao o implementa. Se a pagina inicial estiver quebrada, mude o idioma do jogo para zh_MY ou zh_TW nas Configuracoes."
+  "vn.homepageNote": "Com o idioma do jogo em zh_CN, o conteudo da central de atividades da pagina inicial pode falhar (a Riot nao publica todas as paginas em zh_CN e o LCU retorna 400). O plugin zh-cn-home-locale da ABC (plugin do Pengu Loader) volta automaticamente ao conteudo zh_TW; esta ferramenta nao o inclui.",
+  "vn.homepageWarning": "Com o idioma do jogo em zh_CN, o conteudo da central de atividades da pagina inicial pode falhar (a Riot nao publica todas as paginas em zh_CN e o LCU retorna 400). E uma limitacao da fonte de conteudo, nao um defeito da ferramenta ou do cliente. Use zh_MY/zh_TW para evitar, ou instale o zh-cn-home-locale da ABC (plugin do Pengu Loader) para voltar automaticamente ao conteudo zh_TW.",
+  "locale.homeBroken": "página inicial quebrada",
+  "locale.homeWarning": "zh_CN (China) pode ser instalado, mas a Riot nunca publicou todos os recursos da página inicial para esse idioma, então a página inicial do cliente não abrirá. Use zh_MY ou zh_TW; se precisar manter zh_CN, instale o zh-cn-home-locale da ABC (um plugin do Pengu Loader) para corrigir a página inicial."
 }

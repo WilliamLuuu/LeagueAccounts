@@ -52,13 +52,30 @@ pub fn locale_name(locale: &str) -> &'static str {
     }
 }
 
-/// `zh_CN` needs a homepage patch. With it the client's home page renders the
-/// Simplified Chinese assets; without it the page is broken (missing tiles).
-/// ABC calls this "主页兼容"; the patch is applied at sign-in when the account
-/// runs in zh_CN and reverted when the account switches away, exactly like
-/// ABC's "检查到语言设置为简体中文，准备设置首页兼容" flow.
+/// `zh_CN` is installable, but Riot never published every home-page
+/// (activity-center) page for it. `rcp-be-lol-activity-center` requests
+/// `.../channel/league_of_legends_client/page/<page>?locale=zh_CN`, gets a
+/// 404 for pages such as `jade-home`, and the home page then fails to
+/// render. `zh_TW` has every page, which is why the fallback works.
+///
+/// The only working fix lives inside the game client's renderer: ABC's
+/// `zh-cn-home-locale` Pengu Loader plugin wraps `fetch` and
+/// `XMLHttpRequest` there and retries a failed page with `locale=zh_TW`.
+/// Reaching that renderer from this app would mean injecting code into
+/// `LeagueClientUx` — Pengu's `core.dll` does exactly that with
+/// `VirtualAllocEx` + `WriteProcessMemory` + `CreateRemoteThread`. The
+/// client does not offer a supported way in: `LeagueClientUx.exe`'s own
+/// switch allowlist omits `--remote-debugging-port`, so even the
+/// `customLaunchArgs` channel that the Riot Client's own Play button uses
+/// cannot open a debugging port on the game client. This tool therefore
+/// warns and lets the user choose, instead of pretending it can patch.
 pub fn needs_homepage_patch(locale: &str) -> bool {
     locale == "zh_CN"
+}
+
+/// Locales whose home page renders correctly as-is.
+pub fn home_page_works(locale: &str) -> bool {
+    !needs_homepage_patch(locale)
 }
 
 /// Accept only a locale the client can actually install, so a typo in a config
@@ -98,5 +115,17 @@ mod tests {
         assert_eq!(locale_name("en_US"), "English (United States)");
         assert_ne!(locale_name("en_GB"), locale_name("en_US"));
         assert_ne!(locale_name("zh_MY"), locale_name("zh_TW"));
+    }
+
+    #[test]
+    fn only_zh_cn_needs_the_homepage_patch() {
+        for locale in GAME_LOCALES {
+            assert_eq!(needs_homepage_patch(locale), *locale == "zh_CN", "{locale}");
+            assert_eq!(home_page_works(locale), !needs_homepage_patch(locale), "{locale}");
+        }
+        assert!(needs_homepage_patch("zh_CN"));
+        assert!(!home_page_works("zh_CN"));
+        assert!(home_page_works("zh_TW"));
+        assert!(home_page_works("zh_MY"));
     }
 }

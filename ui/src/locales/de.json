@@ -286,6 +286,8 @@
   "vn.skipHint": "Für vietnamesische Konten: blockiert den Identitätsanbieter der Region, damit die Anmeldung die Profilaktualisierung überspringt.",
   "welcome.title": "Willkommen",
   "welcome.text": "Wählen Sie die Sprache der Oberfläche. Sie lässt sich später in den Einstellungen ändern.",
-  "vn.homepageNote": "Die Startseite des Clients kann fehlende Kacheln zeigen. ABC patcht das; dieses Tool nicht.",
-  "vn.homepageWarning": "Wenn die Spielsprache Vereinfachtes Chinesisch (zh_CN) ist, kann die Startseite des Clients leer sein oder fehlende Kacheln zeigen. Das ist eine Riot-Einschraenkung fuer zh_CN-Ressourcen; ABC patcht das, dieses Tool nicht. Falls die Startseite defekt ist, stellen Sie die Spielsprache in den Einstellungen auf zh_MY oder zh_TW um."
+  "vn.homepageNote": "Bei Spielsprache zh_CN kann der Aktivitaetscenter-Inhalt der Startseite fehlschlagen (Riot publiziert nicht jede Seite fuer zh_CN, der LCU antwortet mit 400). ABCs zh-cn-home-locale-Plugin (Pengu-Loader-Plugin) faellt automatisch auf zh_TW zurueck; dieses Tool bündelt das nicht.",
+  "vn.homepageWarning": "Bei Spielsprache zh_CN kann der Aktivitaetscenter-Inhalt der Startseite fehlschlagen (Riot publiziert nicht jede Seite fuer zh_CN, der LCU antwortet mit 400). Das ist eine Einschraenkung der Inhaltsquelle, kein Defekt von Tool oder Client. Weichen Sie auf zh_MY/zh_TW aus oder installieren Sie ABCs zh-cn-home-locale (Pengu-Loader-Plugin) fuer automatisches Zurueckfallen auf zh_TW.",
+  "locale.homeBroken": "Startseite defekt",
+  "locale.homeWarning": "zh_CN (China) ist installierbar, aber Riot hat nicht alle Startseiten-Ressourcen dafür veröffentlicht, daher öffnet sich die Startseite des Clients nicht. Verwenden Sie stattdessen zh_MY oder zh_TW; falls Sie zh_CN behalten müssen, installieren Sie ABCs zh-cn-home-locale (ein Pengu-Loader-Plugin), um die Startseite zu reparieren."
 }

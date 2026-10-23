@@ -169,6 +169,8 @@ export interface RefreshStarted {
 export interface LocaleOption {
   code: string;
   name: string;
+  /// False when the client home page does not render in this locale.
+  homePageWorks: boolean;
 }
 
 export interface Bootstrap {

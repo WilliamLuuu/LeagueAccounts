@@ -489,8 +489,26 @@ function wireReveal(root: ParentNode): void {
 function localeOptionsHtml(selected: string | null): string {
   const auto = `<option value=""${selected ? "" : " selected"}>${esc(t("locale.auto"))}</option>`;
   return auto + state.locales
-    .map((locale) => `<option value="${esc(locale.code)}"${locale.code === selected ? " selected" : ""}>${esc(locale.name)}</option>`)
+    .map((locale) => {
+      const mark = locale.homePageWorks ? "" : ` — ${esc(t("locale.homeBroken"))}`;
+      return `<option value="${esc(locale.code)}"${locale.code === selected ? " selected" : ""}>${esc(locale.name)}${mark}</option>`;
+    })
     .join("");
+}
+
+/// Keep the zh_CN home-page warning in sync with the language dropdown.
+/// Both dialogs share the paragraph and the select, so the note is written
+/// once and toggled from here instead of being duplicated per dialog.
+function syncHomeWarning(root: ParentNode): void {
+  const select = root.querySelector<HTMLSelectElement>("select[name=locale]");
+  const note = root.querySelector<HTMLElement>("[data-home-warning]");
+  if (!select || !note) return;
+  const update = () => {
+    const chosen = state.locales.find((locale) => locale.code === select.value);
+    note.hidden = !chosen || chosen.homePageWorks;
+  };
+  select.addEventListener("change", update);
+  update();
 }
 
 async function editAccount(account: AccountView): Promise<void> {
@@ -518,12 +536,12 @@ async function editAccount(account: AccountView): Promise<void> {
       </label>
       <p class="hint">${t("edit.hint")}</p>
       <p class="hint">${t("edit.localeHint")}</p>
-      <p class="hint warn">${esc(t("vn.homepageNote"))}</p>`,
+      <p class="hint warn" data-home-warning hidden>${t("locale.homeWarning")}</p>`,
     actions: [
       { label: t("common.cancel"), value: "cancel" },
       { label: t("common.save"), value: "save", kind: "primary" },
     ],
-    onOpen: (root) => wireReveal(root),
+    onOpen: (root) => { wireReveal(root); syncHomeWarning(root); },
     onSubmit: async (value, root) => {
       if (value !== "save") return true;
       const name = $<HTMLInputElement>('[name="name"]', root).value;
@@ -791,7 +809,7 @@ function openAddDrawer(tab: "single" | "multi" = "single"): void {
               <input name="description" autocomplete="off" placeholder="${esc(t("edit.descriptionPh"))}" /></label>
             <label class="field"><span>${t("edit.locale")}</span>
               <div class="select-wrap full"><select name="locale">${localeOptionsHtml(lastLocale())}</select></div></label>
-            <p class="hint warn">${esc(t("vn.homepageNote"))}</p>
+            <p class="hint warn" data-home-warning hidden>${t("locale.homeWarning")}</p>
             <label class="toggle-row">
               <span class="toggle-text"><strong>${esc(t("vn.skip"))}</strong><span>${esc(t("vn.skipHint"))}</span></span>
               <input type="checkbox" name="skipProfileUpdate"/>
@@ -806,6 +824,7 @@ function openAddDrawer(tab: "single" | "multi" = "single"): void {
             <label class="field"><span>${t("add.multiRegion")}</span><div class="select-wrap full"><select name="region">${regionOptions}</select></div></label>
             <label class="field"><span>${t("edit.locale")}</span>
               <div class="select-wrap full"><select name="locale">${localeOptionsHtml(lastLocale())}</select></div></label>
+            <p class="hint warn" data-home-warning hidden>${t("locale.homeWarning")}</p>
             <button class="btn btn-primary btn-block" type="submit">${icon("users")} ${t("add.multiSubmit")}</button>
           </form>
         </div>
@@ -843,6 +862,8 @@ function openAddDrawer(tab: "single" | "multi" = "single"): void {
   $("[data-close]", overlay).addEventListener("click", close);
 
   wireReveal(overlay);
+  // Both panels carry their own language select; each needs its own listener.
+  overlay.querySelectorAll<HTMLElement>("[data-panel]").forEach(syncHomeWarning);
 
   const textarea = $<HTMLTextAreaElement>("textarea", overlay);
   const counter = $(".multi-count", overlay);

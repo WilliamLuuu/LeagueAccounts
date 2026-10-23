@@ -86,6 +86,9 @@ struct UpdateAccount {
 struct LocaleOption {
     code: &'static str,
     name: &'static str,
+    /// False for locales whose client home page does not render, so the UI
+    /// can warn before the user picks one.
+    home_page_works: bool,
 }
 
 #[derive(Serialize)]
@@ -205,6 +208,7 @@ fn bootstrap(app: AppHandle, state: AppState<'_>) -> CommandResult<Bootstrap> {
             .map(|code| LocaleOption {
                 code,
                 name: locales::locale_name(code),
+                home_page_works: locales::home_page_works(code),
             })
             .collect(),
         version: env!("CARGO_PKG_VERSION"),

@@ -286,6 +286,8 @@
   "vn.skipHint": "越南服专用：屏蔽区服身份验证域名，使登录跳过 Riot 的更新资料流程。",
   "welcome.title": "欢迎",
   "welcome.text": "选择界面语言，之后可以在设置中更改。",
-  "vn.homepageWarning": "游戏语言为简体中文（zh_CN）时，客户端首页可能出现空白或显示异常（缺少瓦片）。这是 Riot 对 zh_CN 资源的限制，ABC 通过“主页兼容”补丁处理，本工具暂未实现该补丁。如遇首页异常，可在设置中把游戏语言改为 zh_MY 或 zh_TW。",
-  "vn.homepageNote": "客户端首页可能出现异常（缺瓦片）。ABC 用“主页兼容”补丁处理，本工具未实现。"
+  "vn.homepageWarning": "游戏语言为 zh_CN 时，客户端首页的活动中心内容可能加载失败（Riot 未为 zh_CN 配置全部页面，LCU 返回 400）。这是内容源限制，不是本工具或客户端损坏。可改用 zh_MY/zh_TW 避开，或安装 ABC 作者的 zh-cn-home-locale（Pengu Loader 插件）自动回退 zh_TW 内容。",
+  "vn.homepageNote": "游戏语言为 zh_CN 时，客户端首页的活动中心内容可能加载失败（Riot 未为 zh_CN 配置全部页面，LCU 返回 400）。ABC 作者的 zh-cn-home-locale（Pengu Loader 插件）可自动回退 zh_TW 内容；本工具未内置该修复。",
+  "locale.homeBroken": "主页异常",
+  "locale.homeWarning": "zh_CN（中国）可以安装，但 Riot 没有为它发布全部主页内容，客户端主页会打不开。可改用 zh_MY / zh_TW；若必须用 zh_CN，需安装 ABC 作者的 zh-cn-home-locale（Pengu Loader 插件）才能修复主页。"
 }

@@ -286,6 +286,8 @@
   "vn.skipHint": "Vietnam hesapları için: bölgenin kimlik sağlayıcısını engelleyerek girişin profil güncellemeyi atlamasını sağlar.",
   "welcome.title": "Hoş geldiniz",
   "welcome.text": "Arayüz dilini seçin. Ayarlar'dan daha sonra değiştirebilirsiniz.",
-  "vn.homepageNote": "İstemci ana sayfasında eksik kutucuklar görünebilir. ABC bir yama uygular; bu araç uygulamaz.",
-  "vn.homepageWarning": "Oyun dili Basit Cince (zh_CN) oldugunda, istemci ana sayfasi bos veya eksik kutucuklarla gorunebilir. Bu, Riot'un zh_CN kaynaklari icin bir sinirlamasidir; ABC bir yama uygular, bu arac uygulamaz. Ana sayfa bozuksa Ayarlar'dan oyun dilini zh_MY veya zh_TW yapin."
+  "vn.homepageNote": "Oyun dili zh_CN iken ana sayfadaki etkinlik merkezi icerigi yuklenemeyebilir (Riot her sayfayi zh_CN icin yayinlamiyor ve LCU 400 donduruyor). ABC'nin zh-cn-home-locale eklentisi (Pengu Loader eklentisi) otomatik olarak zh_TW icerigine duser; bu arac o duzeltmeyi icermez.",
+  "vn.homepageWarning": "Oyun dili zh_CN iken ana sayfadaki etkinlik merkezi icerigi yuklenemeyebilir (Riot her sayfayi zh_CN icin yayinlamiyor, LCU 400 donduruyor). Bu bir icerik kaynagi sinirlamasidir; arac veya istemci hatasi degildir. Ondeginmek icin zh_MY/zh_TW kullanin veya ABC'nin zh-cn-home-locale (Pengu Loader eklentisi) eklentisini kurup otomatik zh_TW icerigine dusebilirsiniz.",
+  "locale.homeBroken": "ana sayfa bozuk",
+  "locale.homeWarning": "zh_CN (Çin) kurulabilir, ancak Riot ana sayfa varlıklarının tamamını bu yerel ayar için yayınlamadı; bu yüzden istemci ana sayfası açılmaz. Bunun yerine zh_MY veya zh_TW kullanın; zh_CN'de kalmanız gerekiyorsa ana sayfayı düzeltmek için ABC'nin zh-cn-home-locale eklentisini (Pengu Loader eklentisi) kurun."
 }
